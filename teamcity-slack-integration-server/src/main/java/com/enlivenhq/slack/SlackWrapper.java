@@ -27,6 +27,7 @@ public class SlackWrapper
     protected String serverUrl;
 
     protected Boolean useAttachment;
+    protected String pullRequestUrl;
 
     public SlackWrapper () {
         this.useAttachment  = TeamCityProperties.getBooleanOrTrue("teamcity.notification.slack.useAttachment");
@@ -80,7 +81,8 @@ public class SlackWrapper
     public String getFormattedPayload(String project, String build, String branch, String statusText, String statusColor, String btId, long buildId) {
         Gson gson = GSON_BUILDER.create();
 
-        SlackPayload slackPayload = new SlackPayload(project, build, branch, statusText, statusColor, btId, buildId, WebUtil.escapeUrlForQuotes(getServerUrl()));
+        SlackPayload slackPayload = new SlackPayload(project, build, branch, statusText, statusColor, btId, buildId,
+                WebUtil.escapeUrlForQuotes(getServerUrl()), WebUtil.escapeUrlForQuotes(pullRequestUrl));
         slackPayload.setChannel(getChannel());
         slackPayload.setUsername(getUsername());
         slackPayload.setUseAttachments(this.useAttachment);
@@ -139,5 +141,9 @@ public class SlackWrapper
 
     public void setServerUrl(String serverUrl) {
         this.serverUrl = serverUrl;
+    }
+
+    public void setPullRequestUrl(String pullRequestUrl) {
+        this.pullRequestUrl = pullRequestUrl;
     }
 }

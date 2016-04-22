@@ -1,5 +1,6 @@
 package com.enlivenhq.teamcity;
 import com.google.gson.annotations.Expose;
+import org.apache.commons.lang.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,7 +73,8 @@ public class SlackPayload {
         return attachments != null && attachments.size() > 0;
     }
 
-    public SlackPayload(String project, String build, String branch, String statusText, String statusColor, String btId, long buildId, String serverUrl) {
+    public SlackPayload(String project, String build, String branch, String statusText, String statusColor,
+                        String btId, long buildId, String serverUrl, String pullRequestUrl) {
         String escapedBranch = branch.length() > 0 ? " [" + branch + "]" : "";
         statusText = "<" + serverUrl + "/viewLog.html?buildId=" + buildId + "&buildTypeId=" + btId + "|" + statusText + ">";
 
@@ -99,6 +101,11 @@ public class SlackPayload {
             attachment.fields.add(attachmentBranch);
         }
         attachment.fields.add(attachmentStatus);
+
+        if(StringUtils.isNotEmpty(pullRequestUrl)){
+            AttachmentField prUrlField = new AttachmentField("PullRequest URL", pullRequestUrl, false);
+            attachment.fields.add(prUrlField);
+        }
 
         this._attachments = new ArrayList<Attachment>();
         this._attachments.add(0, attachment);

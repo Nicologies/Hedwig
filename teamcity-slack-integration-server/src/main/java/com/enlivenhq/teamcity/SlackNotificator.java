@@ -1,5 +1,6 @@
 package com.enlivenhq.teamcity;
 
+import com.enlivenhq.slack.PullRequestInfo;
 import com.enlivenhq.slack.SlackWrapper;
 import jetbrains.buildServer.Build;
 import jetbrains.buildServer.notification.Notificator;
@@ -14,6 +15,7 @@ import jetbrains.buildServer.users.NotificatorPropertyKey;
 import jetbrains.buildServer.users.PropertyKey;
 import jetbrains.buildServer.users.SUser;
 import jetbrains.buildServer.vcs.VcsRoot;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -21,6 +23,7 @@ import org.jetbrains.annotations.Nullable;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 public class SlackNotificator implements Notificator {
@@ -55,7 +58,7 @@ public class SlackNotificator implements Notificator {
     }
 
     public void notifyBuildFailed(@NotNull SRunningBuild sRunningBuild, @NotNull Set<SUser> users) {
-         sendNotification(sRunningBuild.getFullName(), sRunningBuild.getBuildNumber(), "failed: " + sRunningBuild.getStatusDescriptor().getText(), "danger", users, sRunningBuild);
+        sendNotification(sRunningBuild.getFullName(), sRunningBuild.getBuildNumber(), "failed: " + sRunningBuild.getStatusDescriptor().getText(), "danger", users, sRunningBuild);
     }
 
     public void notifyBuildFailedToStart(@NotNull SRunningBuild sRunningBuild, @NotNull Set<SUser> users) {
@@ -146,48 +149,64 @@ public class SlackNotificator implements Notificator {
     }
 
     private void sendNotification(String project, String build, String statusText, String statusColor, Set<SUser> users, Build bt) {
+        if(!(bt instanceof SBuild)){
+            return;
+        }
+        SBuild sbuild = (SBuild)bt;
+        PullRequestInfo prInfo = new PullRequestInfo(sbuild);
         for (SUser user : users) {
-            SlackWrapper slackWrapper = getSlackWrapperWithUser(user);
-            try {
-                slackWrapper.send(project, build, getBranch((SBuild)bt), statusText, statusColor, bt);
-            }
-            catch (IOException e) {
-                log.error(e.getMessage());
+            List<SlackWrapper> slackWrappers = getSlackWrappersWithUser(user, prInfo);
+            for(SlackWrapper slackWrapper : slackWrappers){
+                try {
+                    slackWrapper.send(project, build, getBranch(sbuild), statusText, statusColor, bt);
+                }
+                catch (IOException e) {
+                    log.error(e.getMessage());
+                }
             }
         }
     }
 
-    private SlackWrapper getSlackWrapperWithUser(SUser user) {
-        String channel = user.getPropertyValue(slackChannel);
-        String username = user.getPropertyValue(slackUsername);
-        String url = user.getPropertyValue(slackUrl);
+    private List<SlackWrapper> getSlackWrappersWithUser(SUser user, PullRequestInfo pr){
+        List<String> channels = pr.getChannels();
+        channels.add(0, user.getPropertyValue(slackChannel));
+        List<SlackWrapper> ret = new ArrayList<SlackWrapper>(channels.size());
+        for(String channel : channels) {
+            String username = user.getPropertyValue(slackUsername);
+            String url = user.getPropertyValue(slackUrl);
 
-        if (slackConfigurationIsInvalid(channel, username, url)) {
-            log.error("Could not send Slack notification. The Slack channel, username, or URL was null. " +
-                      "Double check your Notification settings");
+            if (slackConfigurationIsInvalid(channel, username, url)) {
+                log.error("Could not send Slack notification. The Slack channel, username, or URL was null. " +
+                        "Double check your Notification settings");
+            }else{
+                ret.add(constructSlackWrapper(channel, username, url, pr.Url));
+            }
 
-            return new SlackWrapper();
         }
-
-        return constructSlackWrapper(channel, username, url);
+        return ret;
     }
 
     private boolean slackConfigurationIsInvalid(String channel, String username, String url) {
         return channel == null || username == null || url == null;
     }
 
-    private SlackWrapper constructSlackWrapper(String channel, String username, String url) {
+    private SlackWrapper constructSlackWrapper(String channel, String username, String url, String pullReqUrl) {
         SlackWrapper slackWrapper = new SlackWrapper();
 
         slackWrapper.setChannel(channel);
         slackWrapper.setUsername(username);
         slackWrapper.setSlackUrl(url);
+        slackWrapper.setPullRequestUrl(pullReqUrl);
         slackWrapper.setServerUrl(myServer.getRootUrl());
 
         return slackWrapper;
     }
 
     private String getBranch(SBuild build) {
+        String branchNameForPullRequest = build.getParametersProvider().get("teamcity.build.pull_req.branch_name");
+        if(StringUtils.isNotEmpty(branchNameForPullRequest)){
+            return branchNameForPullRequest;
+        }
         Branch branch = build.getBranch();
         if (branch != null && branch.getName() != "<default>") {
             return branch.getDisplayName();
