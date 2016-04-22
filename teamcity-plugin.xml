@@ -5,11 +5,11 @@
     <display-name>Slack</display-name>
     <version>@Version@</version>
     <description>Post messages to your Slack instance for build events.</description>
-    <download-url>http://enlivenhq.com/</download-url>
-    <email>developers@enlivenhq.com</email>
+    <download-url>https://github.com/Nicologies/teamcity-slack/releases/latest</download-url>
+    <email>nicologies@gmail.com</email>
     <vendor>
-      <name>Enliven HQ</name>
-      <url>http://enlivenhq.com/</url>
+      <name>Nicologies</name>
+      <url>http://nicologies.tk/</url>
       <logo>http://enlivenhq.com/wp-content/themes/enlivenhq/_/images/enliven_circle.svg</logo>
     </vendor>
   </info>
