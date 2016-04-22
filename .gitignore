@@ -7,3 +7,6 @@
 
 # IntelliJ #
 .idea
+teamcity-slack-integration-server/target/
+*.iml
+build/
