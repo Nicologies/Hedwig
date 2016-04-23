@@ -7,25 +7,38 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PullRequestInfo {
-    private String myAuthor;
-    private String myAssignee;
+    private String _author;
+    private String _assignee;
+    private String _triggeredBy;
     public String Url;
 
     public PullRequestInfo(SBuild build){
-        myAuthor = build.getParametersProvider().get("teamcity.build.pull_req.author");
+        _author = build.getParametersProvider().get("teamcity.build.pull_req.author");
 
-        myAssignee = build.getParametersProvider().get("teamcity.build.pull_req.assignee");
+        _assignee = build.getParametersProvider().get("teamcity.build.pull_req.assignee");
 
         Url = build.getParametersProvider().get("teamcity.build.pull_req.url");
+
+        _triggeredBy = build.getParametersProvider().get("teamcity.build.triggered_by.mapped_user");
+        if(StringUtils.isEmpty(_triggeredBy)){
+           _triggeredBy = build.getParametersProvider().get("teamcity.build.triggeredBy.username");
+        }
+
     }
     public List<String> getChannels(){
         List<String> ret = new ArrayList<String>();
-        if(StringUtils.isNotEmpty(myAuthor)){
-            ret.add("@" + myAuthor);
-        }
-        if(StringUtils.isNotEmpty(myAssignee)){
-            ret.add("@"+ myAssignee);
-        }
+        AddUserToMentionList(ret, _author);
+        AddUserToMentionList(ret, _assignee);
+        AddUserToMentionList(ret, _triggeredBy);
         return ret;
+    }
+
+    public void AddUserToMentionList(List<String> list, String user){
+        if(StringUtils.isNotEmpty(user)) {
+            String mentionAssignee = "@" +user;
+            if(!list.contains(mentionAssignee)) {
+                list.add(mentionAssignee);
+            }
+        }
     }
 }
