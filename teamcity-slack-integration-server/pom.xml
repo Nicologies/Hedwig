@@ -4,7 +4,7 @@
   <parent>
     <artifactId>teamcity-slack-integration</artifactId>
     <groupId>com.enlivenhq.teamcity</groupId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0.0</version>
   </parent>
   <artifactId>teamcity-slack-integration-server</artifactId>
   <packaging>jar</packaging>
