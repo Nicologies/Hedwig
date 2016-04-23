@@ -40,6 +40,10 @@ public class SlackNotificator implements Notificator {
     private static final PropertyKey slackUsername = new NotificatorPropertyKey(type, slackUsernameKey);
     private static final PropertyKey slackUrl = new NotificatorPropertyKey(type, slackUrlKey);
 
+    public static final String SystemWideSlackChannel = "system.slack.channel";
+    public static final String SystemWideSlackUrlKey = "system.slack.url_key";
+    public static final String SystemWideSlackUserName = "system.slack.user_name";
+
     private SBuildServer myServer;
 
     public SlackNotificator(NotificatorRegistry notificatorRegistry, SBuildServer server) {
@@ -141,9 +145,12 @@ public class SlackNotificator implements Notificator {
     private ArrayList<UserPropertyInfo> getUserPropertyInfosList() {
         ArrayList<UserPropertyInfo> userPropertyInfos = new ArrayList<UserPropertyInfo>();
 
-        userPropertyInfos.add(new UserPropertyInfo(slackChannelKey, "Slack Channel"));
-        userPropertyInfos.add(new UserPropertyInfo(slackUsernameKey, "Slack Username"));
-        userPropertyInfos.add(new UserPropertyInfo(slackUrlKey, "Slack Webhook URL"));
+        userPropertyInfos.add(new UserPropertyInfo(slackChannelKey,
+                "Slack Channel(Leave empty to use %" + SystemWideSlackChannel + "%)"));
+        userPropertyInfos.add(new UserPropertyInfo(slackUsernameKey,
+                "Slack Username(Leave empty to use %" + SystemWideSlackUserName + "%)"));
+        userPropertyInfos.add(new UserPropertyInfo(slackUrlKey,
+                "Slack Webhook URL(Leave empty to use %" + SystemWideSlackUrlKey + "%)"));
 
         return userPropertyInfos;
     }
@@ -155,7 +162,21 @@ public class SlackNotificator implements Notificator {
         SBuild sbuild = (SBuild)bt;
         PullRequestInfo prInfo = new PullRequestInfo(sbuild);
         for (SUser user : users) {
-            List<SlackWrapper> slackWrappers = getSlackWrappersWithUser(user, prInfo);
+            String username = user.getPropertyValue(slackUsername);
+            if(StringUtils.isEmpty(username)){
+                username = sbuild.getParametersProvider().get(SystemWideSlackUserName);
+            }
+
+            String url = user.getPropertyValue(slackUrl);
+            if(StringUtils.isEmpty(url)){
+                url = sbuild.getParametersProvider().get(SystemWideSlackUrlKey);
+            }
+
+            String configuredChannel = user.getPropertyValue(slackChannel);
+            if(StringUtils.isEmpty(configuredChannel)){
+                configuredChannel = sbuild.getParametersProvider().get(SystemWideSlackChannel);
+            }
+            List<SlackWrapper> slackWrappers = getSlackWrappersWithUser(configuredChannel, prInfo, url, username);
             for(SlackWrapper slackWrapper : slackWrappers){
                 try {
                     slackWrapper.send(project, build, getBranch(sbuild), statusText, statusColor, bt);
@@ -167,19 +188,16 @@ public class SlackNotificator implements Notificator {
         }
     }
 
-    private List<SlackWrapper> getSlackWrappersWithUser(SUser user, PullRequestInfo pr){
+    private List<SlackWrapper> getSlackWrappersWithUser(String configuredChannelOfTheUser, PullRequestInfo pr, String urlKey, String slackBotName){
         List<String> channels = pr.getChannels();
-        channels.add(0, user.getPropertyValue(slackChannel));
+        channels.add(0, configuredChannelOfTheUser);
         List<SlackWrapper> ret = new ArrayList<SlackWrapper>(channels.size());
         for(String channel : channels) {
-            String username = user.getPropertyValue(slackUsername);
-            String url = user.getPropertyValue(slackUrl);
-
-            if (slackConfigurationIsInvalid(channel, username, url)) {
+            if (slackConfigurationIsInvalid(channel, slackBotName, urlKey)) {
                 log.error("Could not send Slack notification. The Slack channel, username, or URL was null. " +
                         "Double check your Notification settings");
             }else{
-                ret.add(constructSlackWrapper(channel, username, url, pr.Url));
+                ret.add(constructSlackWrapper(channel, slackBotName, urlKey, pr.Url));
             }
 
         }
