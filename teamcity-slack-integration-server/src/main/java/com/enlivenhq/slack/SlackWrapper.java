@@ -5,6 +5,7 @@ import com.enlivenhq.teamcity.SlackPayload;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import jetbrains.buildServer.Build;
+import jetbrains.buildServer.serverSide.SRunningBuild;
 import jetbrains.buildServer.serverSide.TeamCityProperties;
 import jetbrains.buildServer.web.util.WebUtil;
 import org.apache.log4j.Logger;
@@ -37,6 +38,10 @@ public class SlackWrapper
         this.useAttachment = useAttachment;
     }
 
+    public void send(SRunningBuild sRunningBuild, String message, String branchName) throws IOException {
+        String color = "info";
+        send(sRunningBuild.getFullName(), sRunningBuild.getBuildNumber(), branchName, message, color, sRunningBuild);
+    }
     public String send(String project, String build, String branch, String statusText, String statusColor, Build bt) throws IOException
     {
         String formattedPayload = getFormattedPayload(project, build, branch, statusText, statusColor, bt.getBuildTypeExternalId(), bt.getBuildId());

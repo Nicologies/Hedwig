@@ -1,5 +1,6 @@
 package com.enlivenhq.slack;
 
+import com.enlivenhq.teamcity.Utils;
 import jetbrains.buildServer.serverSide.SBuild;
 import org.apache.commons.lang.StringUtils;
 
@@ -11,6 +12,7 @@ public class PullRequestInfo {
     private String _assignee;
     private String _triggeredBy;
     public String Url;
+    public String Branch;
 
     public PullRequestInfo(SBuild build){
         _author = build.getParametersProvider().get("teamcity.build.pull_req.author");
@@ -24,6 +26,7 @@ public class PullRequestInfo {
            _triggeredBy = build.getParametersProvider().get("teamcity.build.triggeredBy.username");
         }
 
+        Branch = Utils.getBranchName(build);
     }
     public List<String> getChannels(){
         List<String> ret = new ArrayList<String>();
@@ -40,5 +43,12 @@ public class PullRequestInfo {
                 list.add(mentionAssignee);
             }
         }
+    }
+
+    public void setAuthor(String author){
+        _author = author;
+    }
+    public void setAssignee(String assignee){
+        _assignee = assignee;
     }
 }

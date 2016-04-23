@@ -176,10 +176,12 @@ public class SlackNotificator implements Notificator {
             if(StringUtils.isEmpty(configuredChannel)){
                 configuredChannel = sbuild.getParametersProvider().get(SystemWideSlackChannel);
             }
-            List<SlackWrapper> slackWrappers = getSlackWrappersWithUser(configuredChannel, prInfo, url, username);
+            List<SlackWrapper> slackWrappers = SlackWrapperBuilder.getSlackWrappers(configuredChannel, prInfo, url,
+                    username, myServer.getRootUrl(), null);
+
             for(SlackWrapper slackWrapper : slackWrappers){
                 try {
-                    slackWrapper.send(project, build, getBranch(sbuild), statusText, statusColor, bt);
+                    slackWrapper.send(project, build, Utils.getBranchName(sbuild), statusText, statusColor, bt);
                 }
                 catch (IOException e) {
                     log.error(e.getMessage());
@@ -188,48 +190,5 @@ public class SlackNotificator implements Notificator {
         }
     }
 
-    private List<SlackWrapper> getSlackWrappersWithUser(String configuredChannelOfTheUser, PullRequestInfo pr, String urlKey, String slackBotName){
-        List<String> channels = pr.getChannels();
-        channels.add(0, configuredChannelOfTheUser);
-        List<SlackWrapper> ret = new ArrayList<SlackWrapper>(channels.size());
-        for(String channel : channels) {
-            if (slackConfigurationIsInvalid(channel, slackBotName, urlKey)) {
-                log.error("Could not send Slack notification. The Slack channel, username, or URL was null. " +
-                        "Double check your Notification settings");
-            }else{
-                ret.add(constructSlackWrapper(channel, slackBotName, urlKey, pr.Url));
-            }
 
-        }
-        return ret;
-    }
-
-    private boolean slackConfigurationIsInvalid(String channel, String username, String url) {
-        return channel == null || username == null || url == null;
-    }
-
-    private SlackWrapper constructSlackWrapper(String channel, String username, String url, String pullReqUrl) {
-        SlackWrapper slackWrapper = new SlackWrapper();
-
-        slackWrapper.setChannel(channel);
-        slackWrapper.setUsername(username);
-        slackWrapper.setSlackUrl(url);
-        slackWrapper.setPullRequestUrl(pullReqUrl);
-        slackWrapper.setServerUrl(myServer.getRootUrl());
-
-        return slackWrapper;
-    }
-
-    private String getBranch(SBuild build) {
-        String branchNameForPullRequest = build.getParametersProvider().get("teamcity.build.pull_req.branch_name");
-        if(StringUtils.isNotEmpty(branchNameForPullRequest)){
-            return branchNameForPullRequest;
-        }
-        Branch branch = build.getBranch();
-        if (branch != null && branch.getName() != "<default>") {
-            return branch.getDisplayName();
-        } else {
-            return "";
-        }
-    }
 }
