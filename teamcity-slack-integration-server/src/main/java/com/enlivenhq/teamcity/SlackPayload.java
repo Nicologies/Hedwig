@@ -4,6 +4,7 @@ import org.apache.commons.lang.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class SlackPayload {
     @Expose
@@ -74,7 +75,7 @@ public class SlackPayload {
     }
 
     public SlackPayload(String project, String build, String branch, String statusText, String statusColor,
-                        String btId, long buildId, String serverUrl, String pullRequestUrl) {
+                        String btId, long buildId, String serverUrl, String pullRequestUrl, Map<String, String> messages) {
         String escapedBranch = branch.length() > 0 ? " [" + branch + "]" : "";
         statusText = "<" + serverUrl + "/viewLog.html?buildId=" + buildId + "&buildTypeId=" + btId + "|" + statusText + ">";
 
@@ -115,6 +116,11 @@ public class SlackPayload {
         if(StringUtils.isNotEmpty(pullRequestUrl)){
             AttachmentField prUrlField = new AttachmentField("PullRequest URL", pullRequestUrl, false);
             attachment.fields.add(prUrlField);
+        }
+
+        for(Map.Entry<String, String> entry : messages.entrySet()){
+            AttachmentField field = new AttachmentField(entry.getKey(), entry.getValue(), false);
+            attachment.fields.add(field);
         }
 
         this._attachments = new ArrayList<Attachment>();

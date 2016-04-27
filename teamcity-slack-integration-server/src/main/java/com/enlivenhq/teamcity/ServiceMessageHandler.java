@@ -12,10 +12,7 @@ import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class ServiceMessageHandler implements ServiceMessageTranslator {
     private static final Logger LOG = Logger.getLogger(ServiceMessageHandler.class);
@@ -35,15 +32,29 @@ public class ServiceMessageHandler implements ServiceMessageTranslator {
 
         Map<String, String> attributes = serviceMessage.getAttributes();
 
-        String message = attributes.get("Message");
-        if (StringUtils.isEmpty(message)){
+        String status = attributes.get("Status");
+        if (StringUtils.isEmpty(status)){
             return ret;
+        }
+
+        Map<String, String> messages = new HashMap<String, String>();
+        for(int i = 0; i < 50; ++i){
+            String msgName = attributes.get("MsgName" + i);
+            String msgValue = attributes.get("MsgValue" + i);
+            if(StringUtils.isEmpty(msgName) || StringUtils.isEmpty(msgValue)){
+                continue;
+            }
+            messages.put(msgName, msgValue);
+        }
+
+        String statusType = attributes.get("StatusType");
+        if(StringUtils.isEmpty(statusType)){
+            statusType = "info";
         }
 
         String userName = getSlackUserName(sRunningBuild, attributes);
 
         String sysWideChannel = sRunningBuild.getParametersProvider().get(SlackNotificator.SystemWideSlackChannel);
-
 
         List<String> sendToChannels = getChannels(attributes);
 
@@ -52,7 +63,7 @@ public class ServiceMessageHandler implements ServiceMessageTranslator {
                 userName, _server.getRootUrl(), sendToChannels);
         for(SlackWrapper slackWrapper : slackWrappers){
             try {
-                slackWrapper.send(sRunningBuild, message, prInfo.Branch);
+                slackWrapper.send(sRunningBuild, status, statusType, prInfo.Branch, messages);
             } catch (IOException e) {
                 e.printStackTrace();
                 LOG.error("Failed to send slack message", e);

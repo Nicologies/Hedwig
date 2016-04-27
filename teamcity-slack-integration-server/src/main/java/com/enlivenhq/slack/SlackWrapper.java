@@ -14,6 +14,8 @@ import org.jetbrains.annotations.NotNull;
 import javax.net.ssl.HttpsURLConnection;
 import java.io.*;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
 public class SlackWrapper
 {
@@ -38,13 +40,20 @@ public class SlackWrapper
         this.useAttachment = useAttachment;
     }
 
-    public void send(SRunningBuild sRunningBuild, String message, String branchName) throws IOException {
-        String color = "info";
-        send(sRunningBuild.getFullName(), sRunningBuild.getBuildNumber(), branchName, message, color, sRunningBuild);
+    public void send(SRunningBuild sRunningBuild, String status, String color, String branchName,
+                      Map<String, String> messages) throws IOException {
+        send(sRunningBuild.getFullName(), sRunningBuild.getBuildNumber(), branchName, status, color, sRunningBuild, messages);
     }
-    public String send(String project, String build, String branch, String statusText, String statusColor, Build bt) throws IOException
+
+    public void send(String project, String build, String branch, String statusText,
+                       String statusColor, Build bt) throws IOException{
+        send(project, build, branch, statusText, statusColor, bt, new HashMap<String, String>());
+    }
+    private String send(String project, String build, String branch, String statusText, String statusColor, Build bt,
+                       Map<String, String> messages) throws IOException
     {
-        String formattedPayload = getFormattedPayload(project, build, branch, statusText, statusColor, bt.getBuildTypeExternalId(), bt.getBuildId());
+        String formattedPayload = getFormattedPayload(project, build, branch, statusText,
+                statusColor, bt.getBuildTypeExternalId(), bt.getBuildId(), messages);
         LOG.debug(formattedPayload);
 
         URL url = new URL(this.getSlackUrl());
@@ -83,11 +92,13 @@ public class SlackWrapper
     }
 
     @NotNull
-    public String getFormattedPayload(String project, String build, String branch, String statusText, String statusColor, String btId, long buildId) {
+    public String getFormattedPayload(String project, String build, String branch,
+                                      String statusText, String statusColor, String btId,
+                                      long buildId, Map<String, String> messages) {
         Gson gson = GSON_BUILDER.create();
 
         SlackPayload slackPayload = new SlackPayload(project, build, branch, statusText, statusColor, btId, buildId,
-                WebUtil.escapeUrlForQuotes(getServerUrl()), WebUtil.escapeUrlForQuotes(pullRequestUrl));
+                WebUtil.escapeUrlForQuotes(getServerUrl()), WebUtil.escapeUrlForQuotes(pullRequestUrl), messages);
         slackPayload.setChannel(getChannel());
         slackPayload.setUsername(getUsername());
         slackPayload.setUseAttachments(this.useAttachment);
