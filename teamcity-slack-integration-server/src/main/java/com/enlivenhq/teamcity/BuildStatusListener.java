@@ -58,9 +58,17 @@ public class BuildStatusListener extends BuildServerAdapter{
     private void SendNotificationForBuild(SRunningBuild build, String statusText, StatusColor statusColor) {
         ParametersProvider paramProvider = build.getParametersProvider();
         String preDefinedChannel = paramProvider.get(SlackNotificator.SystemWideSlackChannel);
+        String channelForFallback = paramProvider.get("system.slack.channel_for_fallback_only");
+
         String urlKey = paramProvider.get(SlackNotificator.SystemWideSlackUrlKey);
         String teamcityBotName = paramProvider.get(SlackNotificator.SystemWideSlackUserName);
         PullRequestInfo pr = new PullRequestInfo(build);
+
+        if(StringUtils.isNotEmpty(channelForFallback) && channelForFallback.toLowerCase().equals(true)){
+            if(pr.getChannels().size() > 0){
+                preDefinedChannel = "";
+            }
+        }
         List<SlackWrapper> wrappers = SlackWrapperBuilder.getSlackWrappers(preDefinedChannel,
                 pr, urlKey, teamcityBotName, _server.getRootUrl(),
                 new ArrayList<String>());
