@@ -3,4 +3,5 @@
 <beans default-autowire="constructor">
     <bean id="tcSlackNotificator" class="com.enlivenhq.teamcity.SlackNotificator"/>
     <bean id="tcSlackServiceMessageHandler" class="com.enlivenhq.teamcity.ServiceMessageHandler"/>
+    <bean id="tcSlackBuildStatusListener" class="com.enlivenhq.teamcity.BuildStatusListener"/>
 </beans>

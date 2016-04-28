@@ -161,6 +161,11 @@ public class SlackNotificator implements Notificator {
         }
         SBuild sbuild = (SBuild)bt;
         PullRequestInfo prInfo = new PullRequestInfo(sbuild);
+        // reset the author, assignee and triggered_by
+        // because this is a personal notification.
+        prInfo.setAssignee("");
+        prInfo.setAuthor("");
+        prInfo.setTriggeredBy("");
         for (SUser user : users) {
             String username = user.getPropertyValue(slackUsername);
             if(StringUtils.isEmpty(username)){
@@ -176,6 +181,7 @@ public class SlackNotificator implements Notificator {
             if(StringUtils.isEmpty(configuredChannel)){
                 configuredChannel = sbuild.getParametersProvider().get(SystemWideSlackChannel);
             }
+
             List<SlackWrapper> slackWrappers = SlackWrapperBuilder.getSlackWrappers(configuredChannel, prInfo, url,
                     username, myServer.getRootUrl(), null);
 
@@ -189,6 +195,4 @@ public class SlackNotificator implements Notificator {
             }
         }
     }
-
-
 }

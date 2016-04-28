@@ -51,4 +51,8 @@ public class PullRequestInfo {
     public void setAssignee(String assignee){
         _assignee = assignee;
     }
+
+    public void setTriggeredBy(String triggeredBy) {
+        this._triggeredBy = triggeredBy;
+    }
 }
