@@ -1,4 +1,5 @@
 package com.enlivenhq.teamcity;
+import com.enlivenhq.slack.StatusColor;
 import com.google.gson.annotations.Expose;
 import jetbrains.buildServer.Build;
 import org.apache.commons.lang.StringUtils;
@@ -75,17 +76,17 @@ public class SlackPayload {
         return attachments != null && attachments.size() > 0;
     }
 
-    public SlackPayload(Build build, String branch, String statusText, String statusColor,
+    public SlackPayload(Build build, String branch, String statusText, StatusColor statusColor,
                         String serverUrl, String pullRequestUrl, Map<String, String> messages) {
         String escapedBranch = branch.length() > 0 ? " [" + branch + "]" : "";
         statusText = "<" + serverUrl + "/viewLog.html?buildId=" + build.getBuildId() + "&buildTypeId=" + build.getBuildTypeExternalId() + "|" + statusText + ">";
 
         String statusEmoji;
-        if(statusColor.equals("danger")) {
+        if(statusColor.equals(StatusColor.danger)) {
             statusEmoji = ":x: ";
-        }else if(statusColor.equals("warning")){
+        }else if(statusColor.equals(StatusColor.warning)){
             statusEmoji = "";
-        }else if(statusColor.equals("info")){
+        }else if(statusColor.equals(StatusColor.info)){
             statusEmoji = ":information_source: ";
         }
         else{
@@ -96,7 +97,7 @@ public class SlackPayload {
         this.text = payloadText;
 
         Attachment attachment = new Attachment();
-        attachment.color = statusColor;
+        attachment.color = statusColor.name();
         attachment.pretext = "Build Status";
         attachment.fallback = payloadText;
         attachment.fields = new ArrayList<AttachmentField>();

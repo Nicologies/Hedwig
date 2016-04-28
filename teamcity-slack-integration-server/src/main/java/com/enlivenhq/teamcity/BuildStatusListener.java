@@ -2,6 +2,7 @@ package com.enlivenhq.teamcity;
 
 import com.enlivenhq.slack.PullRequestInfo;
 import com.enlivenhq.slack.SlackWrapper;
+import com.enlivenhq.slack.StatusColor;
 import jetbrains.buildServer.messages.Status;
 import jetbrains.buildServer.parameters.ParametersProvider;
 import jetbrains.buildServer.serverSide.BuildServerAdapter;
@@ -29,8 +30,7 @@ public class BuildStatusListener extends BuildServerAdapter{
         String reportStarting = build.getParametersProvider().get("system.slack.report_starting");
         if(StringUtils.isNotEmpty(reportStarting) && reportStarting.toLowerCase().equals("true")){
             String statusText = "started";
-            String statusColor = "warning";
-            SendNotificationForBuild(build, statusText, statusColor);
+            SendNotificationForBuild(build, statusText, StatusColor.warning);
         }
     }
 
@@ -43,21 +43,19 @@ public class BuildStatusListener extends BuildServerAdapter{
             String reportFailure = build.getParametersProvider().get("system.slack.report_failure");
             if (StringUtils.isNotEmpty(reportFailure) && reportFailure.toLowerCase().equals("true")) {
                 String statusText = "failed: " + build.getStatusDescriptor().getText();
-                String statusColor = "danger";
-                SendNotificationForBuild(build, statusText, statusColor);
+                SendNotificationForBuild(build, statusText, StatusColor.danger);
             }
         }
         else if(buildStatus.equals(Status.NORMAL) || buildStatus.equals(Status.WARNING)){
             String reportSuccess = build.getParametersProvider().get("system.slack.report_success");
             if(StringUtils.isNotEmpty(reportSuccess) && reportSuccess.toLowerCase().equals("true")){
                 String statusText = "built successfully. Finished: " + build.getStatusDescriptor().getText();
-                String statusColor = "Succeeded";
-                SendNotificationForBuild(build, statusText, statusColor);
+                SendNotificationForBuild(build, statusText, StatusColor.good);
             }
         }
     }
 
-    private void SendNotificationForBuild(SRunningBuild build, String statusText, String statusColor) {
+    private void SendNotificationForBuild(SRunningBuild build, String statusText, StatusColor statusColor) {
         ParametersProvider paramProvider = build.getParametersProvider();
         String preDefinedChannel = paramProvider.get(SlackNotificator.SystemWideSlackChannel);
         String urlKey = paramProvider.get(SlackNotificator.SystemWideSlackUrlKey);

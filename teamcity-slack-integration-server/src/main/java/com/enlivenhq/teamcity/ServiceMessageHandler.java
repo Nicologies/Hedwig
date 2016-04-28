@@ -2,6 +2,7 @@ package com.enlivenhq.teamcity;
 
 import com.enlivenhq.slack.PullRequestInfo;
 import com.enlivenhq.slack.SlackWrapper;
+import com.enlivenhq.slack.StatusColor;
 import jetbrains.buildServer.messages.BuildMessage1;
 import jetbrains.buildServer.messages.serviceMessages.ServiceMessage;
 import jetbrains.buildServer.messages.serviceMessages.ServiceMessageTranslator;
@@ -48,8 +49,18 @@ public class ServiceMessageHandler implements ServiceMessageTranslator {
         }
 
         String statusType = attributes.get("StatusType");
-        if(StringUtils.isEmpty(statusType)){
-            statusType = "info";
+        StatusColor statusColor = StatusColor.info;
+        if(StringUtils.isNotEmpty(statusType)){
+            String lowerCaseStatus = statusType.toLowerCase();
+            if(lowerCaseStatus.equals("good") || lowerCaseStatus.equals("succeeded")) {
+                statusColor = StatusColor.good;
+            }
+            else if(lowerCaseStatus.equals("danger")) {
+                statusColor = StatusColor.danger;
+            }
+            else if(lowerCaseStatus.equals("warning")) {
+                statusColor = StatusColor.warning;
+            }
         }
 
         String userName = getSlackUserName(sRunningBuild, attributes);
@@ -63,7 +74,7 @@ public class ServiceMessageHandler implements ServiceMessageTranslator {
                 userName, _server.getRootUrl(), sendToChannels);
         for(SlackWrapper slackWrapper : slackWrappers){
             try {
-                slackWrapper.send(sRunningBuild, status, statusType, prInfo.Branch, messages);
+                slackWrapper.send(sRunningBuild, status, statusColor, prInfo.Branch, messages);
             } catch (IOException e) {
                 e.printStackTrace();
                 LOG.error("Failed to send slack message", e);

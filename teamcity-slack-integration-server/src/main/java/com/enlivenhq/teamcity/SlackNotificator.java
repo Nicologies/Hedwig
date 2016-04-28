@@ -2,6 +2,7 @@ package com.enlivenhq.teamcity;
 
 import com.enlivenhq.slack.PullRequestInfo;
 import com.enlivenhq.slack.SlackWrapper;
+import com.enlivenhq.slack.StatusColor;
 import jetbrains.buildServer.Build;
 import jetbrains.buildServer.notification.Notificator;
 import jetbrains.buildServer.notification.NotificatorRegistry;
@@ -62,31 +63,31 @@ public class SlackNotificator implements Notificator {
     }
 
     public void notifyBuildFailed(@NotNull SRunningBuild sRunningBuild, @NotNull Set<SUser> users) {
-        sendNotification("failed: " + sRunningBuild.getStatusDescriptor().getText(), "danger", users, sRunningBuild);
+        sendNotification("failed: " + sRunningBuild.getStatusDescriptor().getText(), StatusColor.danger, users, sRunningBuild);
     }
 
     public void notifyBuildFailedToStart(@NotNull SRunningBuild sRunningBuild, @NotNull Set<SUser> users) {
-        sendNotification("failed to start", "danger", users, sRunningBuild);
+        sendNotification("failed to start", StatusColor.danger, users, sRunningBuild);
     }
 
     public void notifyBuildSuccessful(@NotNull SRunningBuild sRunningBuild, @NotNull Set<SUser> users) {
-        sendNotification("built successfully", "good", users, sRunningBuild);
+        sendNotification("built successfully", StatusColor.good, users, sRunningBuild);
     }
 
     public void notifyLabelingFailed(@NotNull Build build, @NotNull VcsRoot vcsRoot, @NotNull Throwable throwable, @NotNull Set<SUser> sUsers) {
-        sendNotification("labeling failed", "danger", sUsers, build);
+        sendNotification("labeling failed", StatusColor.danger, sUsers, build);
     }
 
     public void notifyBuildFailing(@NotNull SRunningBuild sRunningBuild, @NotNull Set<SUser> sUsers) {
-        sendNotification("failing", "danger", sUsers, sRunningBuild);
+        sendNotification("failing", StatusColor.danger, sUsers, sRunningBuild);
     }
 
     public void notifyBuildProbablyHanging(@NotNull SRunningBuild sRunningBuild, @NotNull Set<SUser> sUsers) {
-        sendNotification("probably hanging", "warning", sUsers, sRunningBuild);
+        sendNotification("probably hanging", StatusColor.warning, sUsers, sRunningBuild);
     }
 
     public void notifyBuildStarted(@NotNull SRunningBuild sRunningBuild, @NotNull Set<SUser> sUsers) {
-        sendNotification("started", "warning", sUsers, sRunningBuild);
+        sendNotification("started", StatusColor.warning, sUsers, sRunningBuild);
     }
 
     public void notifyResponsibleChanged(@NotNull SBuildType sBuildType, @NotNull Set<SUser> sUsers) {
@@ -155,7 +156,7 @@ public class SlackNotificator implements Notificator {
         return userPropertyInfos;
     }
 
-    private void sendNotification(String statusText, String statusColor, Set<SUser> users, Build bt) {
+    private void sendNotification(String statusText, StatusColor statusColor, Set<SUser> users, Build bt) {
         if(!(bt instanceof SBuild)){
             return;
         }

@@ -1,5 +1,6 @@
 package com.enlivenhq.teamcity;
 
+import com.enlivenhq.slack.StatusColor;
 import jetbrains.buildServer.Build;
 import jetbrains.buildServer.BuildType;
 import jetbrains.buildServer.StatusDescriptor;
@@ -28,7 +29,7 @@ public class SlackPayloadTest {
     String buildNum = "build";
     String branch = "";
     String statusText = "status";
-    String statusColor = "color";
+    StatusColor statusColor = StatusColor.danger;
     String btId = "btId";
     long buildId = 0;
     String serverUrl = "localhost";
