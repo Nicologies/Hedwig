@@ -30,7 +30,6 @@ public class BuildStatusListener extends BuildServerAdapter{
         if(StringUtils.isNotEmpty(reportStarting) && reportStarting.toLowerCase().equals("true")){
             String statusText = "started";
             String statusColor = "warning";
-
             SendNotificationForBuild(build, statusText, statusColor);
         }
     }
@@ -45,7 +44,6 @@ public class BuildStatusListener extends BuildServerAdapter{
             if (StringUtils.isNotEmpty(reportFailure) && reportFailure.toLowerCase().equals("true")) {
                 String statusText = "failed: " + build.getStatusDescriptor().getText();
                 String statusColor = "danger";
-
                 SendNotificationForBuild(build, statusText, statusColor);
             }
         }

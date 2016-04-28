@@ -1,5 +1,6 @@
 package com.enlivenhq.teamcity;
 import com.google.gson.annotations.Expose;
+import jetbrains.buildServer.Build;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.ArrayList;
@@ -74,10 +75,10 @@ public class SlackPayload {
         return attachments != null && attachments.size() > 0;
     }
 
-    public SlackPayload(String project, String build, String branch, String statusText, String statusColor,
-                        String btId, long buildId, String serverUrl, String pullRequestUrl, Map<String, String> messages) {
+    public SlackPayload(Build build, String branch, String statusText, String statusColor,
+                        String serverUrl, String pullRequestUrl, Map<String, String> messages) {
         String escapedBranch = branch.length() > 0 ? " [" + branch + "]" : "";
-        statusText = "<" + serverUrl + "/viewLog.html?buildId=" + buildId + "&buildTypeId=" + btId + "|" + statusText + ">";
+        statusText = "<" + serverUrl + "/viewLog.html?buildId=" + build.getBuildId() + "&buildTypeId=" + build.getBuildTypeExternalId() + "|" + statusText + ">";
 
         String statusEmoji;
         if(statusColor.equals("danger")) {
@@ -91,7 +92,7 @@ public class SlackPayload {
             statusEmoji = ":white_check_mark: ";
         }
 
-        String payloadText = statusEmoji + project + escapedBranch + " #" + build + " " + statusText;
+        String payloadText = statusEmoji + build.getFullName() + escapedBranch + " #" + build.getBuildNumber() + " " + statusText;
         this.text = payloadText;
 
         Attachment attachment = new Attachment();
@@ -100,8 +101,8 @@ public class SlackPayload {
         attachment.fallback = payloadText;
         attachment.fields = new ArrayList<AttachmentField>();
 
-        AttachmentField attachmentProject = new AttachmentField("Project", project, false);
-        AttachmentField attachmentBuild = new AttachmentField("Build", build, true);
+        AttachmentField attachmentProject = new AttachmentField("Project", build.getFullName(), false);
+        AttachmentField attachmentBuild = new AttachmentField("Build", build.getBuildNumber(), true);
         AttachmentField attachmentStatus = new AttachmentField("Status", statusText, false);
         AttachmentField attachmentBranch;
 

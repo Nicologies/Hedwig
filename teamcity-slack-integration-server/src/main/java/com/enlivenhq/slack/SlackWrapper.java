@@ -42,18 +42,18 @@ public class SlackWrapper
 
     public void send(SRunningBuild sRunningBuild, String status, String color, String branchName,
                       Map<String, String> messages) throws IOException {
-        send(sRunningBuild.getFullName(), sRunningBuild.getBuildNumber(), branchName, status, color, sRunningBuild, messages);
+        send(branchName, status, color, sRunningBuild, messages);
     }
 
-    public void send(String project, String build, String branch, String statusText,
+    public void send(String branch, String statusText,
                        String statusColor, Build bt) throws IOException{
-        send(project, build, branch, statusText, statusColor, bt, new HashMap<String, String>());
+        send(branch, statusText, statusColor, bt, new HashMap<String, String>());
     }
-    private String send(String project, String build, String branch, String statusText, String statusColor, Build bt,
+    private String send(String branch, String statusText, String statusColor, Build bt,
                        Map<String, String> messages) throws IOException
     {
-        String formattedPayload = getFormattedPayload(project, build, branch, statusText,
-                statusColor, bt.getBuildTypeExternalId(), bt.getBuildId(), messages);
+        String formattedPayload = getFormattedPayload(bt, branch, statusText,
+                statusColor, messages);
         LOG.debug(formattedPayload);
 
         URL url = new URL(this.getSlackUrl());
@@ -92,12 +92,12 @@ public class SlackWrapper
     }
 
     @NotNull
-    public String getFormattedPayload(String project, String build, String branch,
-                                      String statusText, String statusColor, String btId,
-                                      long buildId, Map<String, String> messages) {
+    public String getFormattedPayload(Build build, String branch,
+                                      String statusText, String statusColor,
+                                      Map<String, String> messages) {
         Gson gson = GSON_BUILDER.create();
 
-        SlackPayload slackPayload = new SlackPayload(project, build, branch, statusText, statusColor, btId, buildId,
+        SlackPayload slackPayload = new SlackPayload(build, branch, statusText, statusColor,
                 WebUtil.escapeUrlForQuotes(getServerUrl()), WebUtil.escapeUrlForQuotes(pullRequestUrl), messages);
         slackPayload.setChannel(getChannel());
         slackPayload.setUsername(getUsername());
