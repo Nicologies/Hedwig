@@ -4,7 +4,7 @@
   <parent>
     <artifactId>teamcity-slack-integration</artifactId>
     <groupId>com.enlivenhq.teamcity</groupId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
   </parent>
   <artifactId>build</artifactId>
   <packaging>pom</packaging>
@@ -15,7 +15,7 @@
       <dependency>
            <groupId>com.enlivenhq.teamcity</groupId>
            <artifactId>teamcity-slack-integration-server</artifactId>
-           <version>1.0.0</version>
+           <version>1.0.1</version>
       </dependency>
   </dependencies>
   <build>
