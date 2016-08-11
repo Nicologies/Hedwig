@@ -5,12 +5,14 @@ import jetbrains.buildServer.serverSide.SBuild;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 public class PullRequestInfo {
     private String _author;
     private String _assignee;
     private String _triggeredBy;
+    private String[] _participants;
     public String Url;
     public String Branch;
 
@@ -26,6 +28,11 @@ public class PullRequestInfo {
            _triggeredBy = build.getParametersProvider().get("teamcity.build.triggeredBy.username");
         }
 
+        String rawParticipants = build.getParametersProvider().get("teamcity.build.pull_req.participants");
+        if(StringUtils.isNotEmpty(rawParticipants)){
+            _participants = rawParticipants.split(";");
+        }
+
         Branch = Utils.getBranchName(build);
     }
     public List<String> getChannels(){
@@ -33,6 +40,11 @@ public class PullRequestInfo {
         AddUserToMentionList(ret, _author);
         AddUserToMentionList(ret, _assignee);
         AddUserToMentionList(ret, _triggeredBy);
+        if(_participants != null){
+            for(String p : _participants){
+                AddUserToMentionList(ret, p);
+            }
+        }
         return ret;
     }
 
