@@ -125,7 +125,7 @@ public class ServiceMessageHandler implements ServiceMessageTranslator {
         String channelsStr = attributes.get("Channels");
 
         if (StringUtils.isNotEmpty(channelsStr)) {
-            for(String channel : channelsStr.split(",")) {
+            for(String channel : channelsStr.split(";")) {
                 if(StringUtils.isEmpty(channel)){
                    continue;
                 }
@@ -134,7 +134,7 @@ public class ServiceMessageHandler implements ServiceMessageTranslator {
         }
         String usersStr = attributes.get("Users");
         if (StringUtils.isNotEmpty(usersStr)) {
-            for (String user : usersStr.split(",")) {
+            for (String user : usersStr.split(";")) {
                 if (StringUtils.isEmpty(user)) {
                     continue;
                 }
