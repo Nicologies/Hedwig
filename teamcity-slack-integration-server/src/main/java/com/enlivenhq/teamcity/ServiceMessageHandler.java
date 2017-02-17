@@ -2,7 +2,6 @@ package com.enlivenhq.teamcity;
 
 import com.enlivenhq.github.PullRequestInfo;
 import com.enlivenhq.slack.SlackParameters;
-import com.enlivenhq.slack.SlackMessenger;
 import com.enlivenhq.slack.SlackMessengerFactory;
 import com.enlivenhq.slack.StatusColor;
 import jetbrains.buildServer.messages.BuildMessage1;
@@ -14,7 +13,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
 import java.util.*;
 
 public class ServiceMessageHandler implements ServiceMessageTranslator {
@@ -67,13 +65,11 @@ public class ServiceMessageHandler implements ServiceMessageTranslator {
 
         String userName = getSlackUserName(sRunningBuild, attributes);
 
-        String sysWideChannel = sRunningBuild.getParametersProvider().get(SlackParameters.SystemWideSlackChannel);
-
         List<String> sendToChannels = getChannels(attributes);
 
         PullRequestInfo prInfo = getPullRequestInfo(sRunningBuild, attributes);
         BuildInfo build = new BuildInfo(sRunningBuild, status, statusColor, prInfo, messages);
-        SlackMessengerFactory.sendMsg(build, sysWideChannel, urlKey,
+        SlackMessengerFactory.sendMsg(build, urlKey,
                 userName, _server.getRootUrl(), sendToChannels);
 
         return ret;

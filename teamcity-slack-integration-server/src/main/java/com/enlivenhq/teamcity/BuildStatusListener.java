@@ -2,7 +2,6 @@ package com.enlivenhq.teamcity;
 
 import com.enlivenhq.github.PullRequestInfo;
 import com.enlivenhq.slack.SlackParameters;
-import com.enlivenhq.slack.SlackMessenger;
 import com.enlivenhq.slack.SlackMessengerFactory;
 import com.enlivenhq.slack.StatusColor;
 import jetbrains.buildServer.messages.Status;
@@ -14,10 +13,8 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 public class BuildStatusListener extends BuildServerAdapter{
     private static final Logger log = Logger.getLogger(BuildStatusListener.class);
@@ -59,7 +56,6 @@ public class BuildStatusListener extends BuildServerAdapter{
 
     private void SendNotificationForBuild(SRunningBuild build, String statusText, StatusColor statusColor) {
         ParametersProvider paramProvider = build.getParametersProvider();
-        String preDefinedChannel = paramProvider.get(SlackParameters.SystemWideSlackChannel);
 
         String urlKey = paramProvider.get(SlackParameters.SystemWideSlackUrlKey);
         String teamcityBotName = paramProvider.get(SlackParameters.SystemWideSlackUserName);
@@ -67,8 +63,7 @@ public class BuildStatusListener extends BuildServerAdapter{
         BuildInfo bdInfo = new BuildInfo(build, statusText, statusColor,
                 pr, new HashMap<String, String>());
 
-        SlackMessengerFactory.sendMsg(bdInfo, preDefinedChannel,
-                urlKey, teamcityBotName, _server.getRootUrl(),
+        SlackMessengerFactory.sendMsg(bdInfo, urlKey, teamcityBotName, _server.getRootUrl(),
                 new ArrayList<String>());
 
 

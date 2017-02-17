@@ -2,7 +2,6 @@ package com.enlivenhq.slack;
 
 import com.enlivenhq.github.PullRequestInfo;
 import com.enlivenhq.teamcity.BuildInfo;
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
@@ -12,14 +11,10 @@ import java.util.List;
 
 public class SlackMessengerFactory {
     private static final Logger log = Logger.getLogger(SlackMessengerFactory.class);
-    private static List<SlackMessenger> get(String configuredChannelOfTheUser,
-                                           PullRequestInfo pr, String urlKey,
+    private static List<SlackMessenger> get(PullRequestInfo pr, String urlKey,
                                            String slackBotName, String teamcityServerUrl,
                                            List<String> additionalChannels){
         List<String> channels = pr.getChannels();
-        if(StringUtils.isNotEmpty(configuredChannelOfTheUser)) {
-            channels.add(0, configuredChannelOfTheUser);
-        }
         if(additionalChannels != null){
             channels.addAll(additionalChannels);
         }
@@ -54,12 +49,11 @@ public class SlackMessengerFactory {
         return slackMessenger;
     }
 
-    public static void sendMsg(BuildInfo build, String preDefinedChannel,
+    public static void sendMsg(BuildInfo build,
                                String urlKey,
                                String teamcityBotName, String teamcityServerUrl,
                                List<String> additionalChannels) {
-        List<SlackMessenger> messengers = get(preDefinedChannel,
-                build.getPrInfo(), urlKey, teamcityBotName, teamcityServerUrl,
+        List<SlackMessenger> messengers = get(build.getPrInfo(), urlKey, teamcityBotName, teamcityServerUrl,
                 additionalChannels);
 
         for(SlackMessenger messenger : messengers){
