@@ -1,16 +1,18 @@
 package com.enlivenhq.slack;
 
 import com.enlivenhq.github.PullRequestInfo;
+import com.enlivenhq.teamcity.BuildInfo;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 
 public class SlackMessengerFactory {
     private static final Logger log = Logger.getLogger(SlackMessengerFactory.class);
-    public static List<SlackMessenger> get(String configuredChannelOfTheUser,
+    private static List<SlackMessenger> get(String configuredChannelOfTheUser,
                                            PullRequestInfo pr, String urlKey,
                                            String slackBotName, String teamcityServerUrl,
                                            List<String> additionalChannels){
@@ -50,5 +52,23 @@ public class SlackMessengerFactory {
         slackMessenger.setServerUrl(teamcityServerUrl);
 
         return slackMessenger;
+    }
+
+    public static void sendMsg(BuildInfo build, String preDefinedChannel,
+                               String urlKey,
+                               String teamcityBotName, String teamcityServerUrl,
+                               List<String> additionalChannels) {
+        List<SlackMessenger> messengers = get(preDefinedChannel,
+                build.getPrInfo(), urlKey, teamcityBotName, teamcityServerUrl,
+                additionalChannels);
+
+        for(SlackMessenger messenger : messengers){
+            try {
+                messenger.send(build);
+            } catch (IOException e) {
+                e.printStackTrace();
+                log.error(e.getMessage());
+            }
+        }
     }
 }

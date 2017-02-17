@@ -64,20 +64,13 @@ public class BuildStatusListener extends BuildServerAdapter{
         String urlKey = paramProvider.get(SlackParameters.SystemWideSlackUrlKey);
         String teamcityBotName = paramProvider.get(SlackParameters.SystemWideSlackUserName);
         PullRequestInfo pr = new PullRequestInfo(build);
+        BuildInfo bdInfo = new BuildInfo(build, statusText, statusColor,
+                pr, new HashMap<String, String>());
 
-        List<SlackMessenger> messengers = SlackMessengerFactory.get(preDefinedChannel,
-                pr, urlKey, teamcityBotName, _server.getRootUrl(),
+        SlackMessengerFactory.sendMsg(bdInfo, preDefinedChannel,
+                urlKey, teamcityBotName, _server.getRootUrl(),
                 new ArrayList<String>());
 
-        for(SlackMessenger messenger : messengers){
-            try {
-                BuildInfo bdInfo = new BuildInfo(build, statusText, statusColor,
-                        pr.Branch, new HashMap<String, String>());
-                messenger.send(bdInfo);
-            } catch (IOException e) {
-                e.printStackTrace();
-                log.error(e.getMessage());
-            }
-        }
+
     }
 }

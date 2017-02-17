@@ -72,17 +72,9 @@ public class ServiceMessageHandler implements ServiceMessageTranslator {
         List<String> sendToChannels = getChannels(attributes);
 
         PullRequestInfo prInfo = getPullRequestInfo(sRunningBuild, attributes);
-        List<SlackMessenger> slackMessengers = SlackMessengerFactory.get(sysWideChannel, prInfo, urlKey,
+        BuildInfo build = new BuildInfo(sRunningBuild, status, statusColor, prInfo, messages);
+        SlackMessengerFactory.sendMsg(build, sysWideChannel, urlKey,
                 userName, _server.getRootUrl(), sendToChannels);
-        for(SlackMessenger slackMessenger : slackMessengers){
-            try {
-                BuildInfo build = new BuildInfo(sRunningBuild, status, statusColor, prInfo.Branch, messages);
-                slackMessenger.send(build);
-            } catch (IOException e) {
-                e.printStackTrace();
-                LOG.error("Failed to send slack message", e);
-            }
-        }
 
         return ret;
     }
