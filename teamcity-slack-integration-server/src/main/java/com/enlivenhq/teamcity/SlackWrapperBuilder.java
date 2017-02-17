@@ -1,6 +1,6 @@
 package com.enlivenhq.teamcity;
 
-import com.enlivenhq.slack.PullRequestInfo;
+import com.enlivenhq.github.PullRequestInfo;
 import com.enlivenhq.slack.SlackWrapper;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;

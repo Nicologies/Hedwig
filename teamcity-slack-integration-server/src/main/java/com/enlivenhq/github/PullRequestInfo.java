@@ -1,11 +1,10 @@
-package com.enlivenhq.slack;
+package com.enlivenhq.github;
 
 import com.enlivenhq.teamcity.Utils;
 import jetbrains.buildServer.serverSide.SBuild;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 public class PullRequestInfo {
@@ -62,9 +61,5 @@ public class PullRequestInfo {
     }
     public void setAssignee(String assignee){
         _assignee = assignee;
-    }
-
-    public void setTriggeredBy(String triggeredBy) {
-        this._triggeredBy = triggeredBy;
     }
 }

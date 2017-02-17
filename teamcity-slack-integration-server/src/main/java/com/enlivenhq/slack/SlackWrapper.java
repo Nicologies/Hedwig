@@ -4,8 +4,6 @@ import com.enlivenhq.teamcity.SlackPayload;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import jetbrains.buildServer.Build;
-import jetbrains.buildServer.serverSide.SRunningBuild;
-import jetbrains.buildServer.serverSide.TeamCityProperties;
 import jetbrains.buildServer.web.util.WebUtil;
 import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
@@ -13,7 +11,6 @@ import org.jetbrains.annotations.NotNull;
 import javax.net.ssl.HttpsURLConnection;
 import java.io.*;
 import java.net.URL;
-import java.util.HashMap;
 import java.util.Map;
 
 public class SlackWrapper
@@ -28,29 +25,13 @@ public class SlackWrapper
 
     protected String serverUrl;
 
-    protected Boolean useAttachment;
     protected String pullRequestUrl;
 
     public SlackWrapper () {
-        this.useAttachment  = TeamCityProperties.getBooleanOrTrue("teamcity.notification.slack.useAttachment");
     }
 
-    public SlackWrapper (Boolean useAttachment) {
-        this.useAttachment = useAttachment;
-    }
-
-    public void send(SRunningBuild sRunningBuild, String status, StatusColor color, String branchName,
+    public void send(Build bt, String statusText, StatusColor statusColor, String branch,
                       Map<String, String> messages) throws IOException {
-        send(branchName, status, color, sRunningBuild, messages);
-    }
-
-    public void send(String branch, String statusText,
-                     StatusColor statusColor, Build bt) throws IOException{
-        send(branch, statusText, statusColor, bt, new HashMap<String, String>());
-    }
-    private String send(String branch, String statusText, StatusColor statusColor, Build bt,
-                       Map<String, String> messages) throws IOException
-    {
         String formattedPayload = getFormattedPayload(bt, branch, statusText,
                 statusColor, messages);
         LOG.debug(formattedPayload);
@@ -87,7 +68,7 @@ public class SlackWrapper
             throw new IOException(responseBody);
         }
 
-        return getResponseBody(inputStream, responseBody);
+        getResponseBody(inputStream, responseBody);
     }
 
     @NotNull
@@ -100,7 +81,7 @@ public class SlackWrapper
                 WebUtil.escapeUrlForQuotes(getServerUrl()), WebUtil.escapeUrlForQuotes(pullRequestUrl), messages);
         slackPayload.setChannel(getChannel());
         slackPayload.setUsername(getUsername());
-        slackPayload.setUseAttachments(this.useAttachment);
+        slackPayload.setUseAttachments(true);
 
         return gson.toJson(slackPayload);
     }

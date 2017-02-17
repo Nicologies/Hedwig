@@ -1,6 +1,6 @@
 package com.enlivenhq.teamcity;
 
-import com.enlivenhq.slack.PullRequestInfo;
+import com.enlivenhq.github.PullRequestInfo;
 import com.enlivenhq.slack.SlackParameters;
 import com.enlivenhq.slack.SlackWrapper;
 import com.enlivenhq.slack.StatusColor;
