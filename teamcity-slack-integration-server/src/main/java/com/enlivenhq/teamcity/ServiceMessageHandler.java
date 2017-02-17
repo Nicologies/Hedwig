@@ -75,7 +75,8 @@ public class ServiceMessageHandler implements ServiceMessageTranslator {
                 userName, _server.getRootUrl(), sendToChannels);
         for(SlackWrapper slackWrapper : slackWrappers){
             try {
-                slackWrapper.send(sRunningBuild, status, statusColor, prInfo.Branch, messages);
+                BuildInfo build = new BuildInfo(sRunningBuild, status, statusColor, prInfo.Branch, messages);
+                slackWrapper.send(build);
             } catch (IOException e) {
                 e.printStackTrace();
                 LOG.error("Failed to send slack message", e);

@@ -1,9 +1,9 @@
 package com.enlivenhq.slack;
 
+import com.enlivenhq.teamcity.BuildInfo;
 import com.enlivenhq.teamcity.SlackPayload;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import jetbrains.buildServer.Build;
 import jetbrains.buildServer.web.util.WebUtil;
 import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
@@ -11,7 +11,6 @@ import org.jetbrains.annotations.NotNull;
 import javax.net.ssl.HttpsURLConnection;
 import java.io.*;
 import java.net.URL;
-import java.util.Map;
 
 public class SlackWrapper
 {
@@ -30,10 +29,8 @@ public class SlackWrapper
     public SlackWrapper () {
     }
 
-    public void send(Build bt, String statusText, StatusColor statusColor, String branch,
-                      Map<String, String> messages) throws IOException {
-        String formattedPayload = getFormattedPayload(bt, branch, statusText,
-                statusColor, messages);
+    public void send(BuildInfo build) throws IOException {
+        String formattedPayload = getFormattedPayload(build);
         LOG.debug(formattedPayload);
 
         URL url = new URL(this.getSlackUrl());
@@ -72,13 +69,11 @@ public class SlackWrapper
     }
 
     @NotNull
-    public String getFormattedPayload(Build build, String branch,
-                                      String statusText, StatusColor statusColor,
-                                      Map<String, String> messages) {
+    public String getFormattedPayload(BuildInfo build) {
         Gson gson = GSON_BUILDER.create();
 
-        SlackPayload slackPayload = new SlackPayload(build, branch, statusText, statusColor,
-                WebUtil.escapeUrlForQuotes(getServerUrl()), WebUtil.escapeUrlForQuotes(pullRequestUrl), messages);
+        SlackPayload slackPayload = new SlackPayload(build,
+                WebUtil.escapeUrlForQuotes(getServerUrl()), WebUtil.escapeUrlForQuotes(pullRequestUrl));
         slackPayload.setChannel(getChannel());
         slackPayload.setUsername(getUsername());
         slackPayload.setUseAttachments(true);

@@ -70,8 +70,9 @@ public class BuildStatusListener extends BuildServerAdapter{
 
         for(SlackWrapper slack : wrappers){
             try {
-                slack.send(build, statusText, statusColor,
+                BuildInfo bdInfo = new BuildInfo(build, statusText, statusColor,
                         pr.Branch, new HashMap<String, String>());
+                slack.send(bdInfo);
             } catch (IOException e) {
                 e.printStackTrace();
                 log.error(e.getMessage());

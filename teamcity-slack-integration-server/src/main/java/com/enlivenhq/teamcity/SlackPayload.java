@@ -1,7 +1,6 @@
 package com.enlivenhq.teamcity;
 import com.enlivenhq.slack.StatusColor;
 import com.google.gson.annotations.Expose;
-import jetbrains.buildServer.Build;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.ArrayList;
@@ -76,12 +75,15 @@ public class SlackPayload {
         return attachments != null && attachments.size() > 0;
     }
 
-    public SlackPayload(Build build, String branch, String statusText, StatusColor statusColor,
-                        String serverUrl, String pullRequestUrl, Map<String, String> messages) {
+    public SlackPayload(BuildInfo build,
+                        String serverUrl, String pullRequestUrl) {
+        String branch = build.getBranchName();
         String escapedBranch = branch.length() > 0 ? " [" + branch + "]" : "";
-        statusText = "<" + serverUrl + "/viewLog.html?buildId=" + build.getBuildId() + "&buildTypeId=" + build.getBuildTypeExternalId() + "|" + statusText + ">";
+        String statusText = "<" + serverUrl + "/viewLog.html?buildId="
+                + build.getBuildId() + "&buildTypeId=" + build.getBuildTypeExternalId() + "|" + build.getStatusText() + ">";
 
         String statusEmoji;
+        StatusColor statusColor = build.getStatusColor();
         if(statusColor.equals(StatusColor.danger)) {
             statusEmoji = ":x: ";
         }else if(statusColor.equals(StatusColor.warning)){
@@ -93,7 +95,8 @@ public class SlackPayload {
             statusEmoji = ":white_check_mark: ";
         }
 
-        String payloadText = statusEmoji + build.getFullName() + escapedBranch + " #" + build.getBuildNumber() + " " + statusText;
+        String payloadText = statusEmoji + build.getBuildFullName()
+                + escapedBranch + " #" + build.getBuildNumber() + " " + statusText;
         this.text = payloadText;
 
         Attachment attachment = new Attachment();
@@ -102,7 +105,7 @@ public class SlackPayload {
         attachment.fallback = payloadText;
         attachment.fields = new ArrayList<AttachmentField>();
 
-        AttachmentField attachmentProject = new AttachmentField("Project", build.getFullName(), false);
+        AttachmentField attachmentProject = new AttachmentField("Project", build.getBuildFullName(), false);
         AttachmentField attachmentBuild = new AttachmentField("Build", build.getBuildNumber(), true);
         AttachmentField attachmentStatus = new AttachmentField("Status", statusText, false);
         AttachmentField attachmentBranch;
@@ -120,7 +123,7 @@ public class SlackPayload {
             attachment.fields.add(prUrlField);
         }
 
-        for(Map.Entry<String, String> entry : messages.entrySet()){
+        for(Map.Entry<String, String> entry : build.getMessages().entrySet()){
             AttachmentField field = new AttachmentField(entry.getKey(), entry.getValue(), false);
             attachment.fields.add(field);
         }
