@@ -16,7 +16,6 @@ public class SlackPayload {
     protected String username;
     @Expose
     protected List<Attachment> attachments;
-    private List<Attachment> _attachments;
 
     private class Attachment {
         @Expose
@@ -43,36 +42,12 @@ public class SlackPayload {
         protected boolean isShort;
     }
 
-    private boolean useAttachments = true;
-
     public void setChannel(String channel) {
         this.channel = channel;
     }
 
-    public String getChannel() {
-        return channel;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
     public void setUsername(String username) {
         this.username = username;
-    }
-
-    public void setUseAttachments (boolean useAttachments) {
-        this.useAttachments = useAttachments;
-        if (!useAttachments) {
-            _attachments = attachments;
-            attachments = null;
-        } else {
-            attachments = _attachments;
-        }
-    }
-
-    public boolean hasAttachments () {
-        return attachments != null && attachments.size() > 0;
     }
 
     public SlackPayload(BuildInfo build,
@@ -128,11 +103,7 @@ public class SlackPayload {
             attachment.fields.add(field);
         }
 
-        this._attachments = new ArrayList<Attachment>();
-        this._attachments.add(0, attachment);
-
-        if (this.useAttachments) {
-            attachments = _attachments;
-        }
+        this.attachments = new ArrayList<Attachment>();
+        this.attachments.add(0, attachment);
     }
 }
