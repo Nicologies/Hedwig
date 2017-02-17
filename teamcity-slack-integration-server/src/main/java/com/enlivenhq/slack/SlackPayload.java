@@ -1,5 +1,5 @@
-package com.enlivenhq.teamcity;
-import com.enlivenhq.slack.StatusColor;
+package com.enlivenhq.slack;
+import com.enlivenhq.teamcity.BuildInfo;
 import com.google.gson.annotations.Expose;
 import org.apache.commons.lang.StringUtils;
 

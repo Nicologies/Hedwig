@@ -1,7 +1,6 @@
 package com.enlivenhq.slack;
 
 import com.enlivenhq.teamcity.BuildInfo;
-import com.enlivenhq.teamcity.SlackPayload;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import jetbrains.buildServer.web.util.WebUtil;
