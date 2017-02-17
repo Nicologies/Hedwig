@@ -1,6 +1,7 @@
 package com.enlivenhq.teamcity;
 
 import com.enlivenhq.slack.PullRequestInfo;
+import com.enlivenhq.slack.SlackParameters;
 import com.enlivenhq.slack.SlackWrapper;
 import com.enlivenhq.slack.StatusColor;
 import jetbrains.buildServer.messages.Status;
@@ -57,18 +58,12 @@ public class BuildStatusListener extends BuildServerAdapter{
 
     private void SendNotificationForBuild(SRunningBuild build, String statusText, StatusColor statusColor) {
         ParametersProvider paramProvider = build.getParametersProvider();
-        String preDefinedChannel = paramProvider.get(SlackNotificator.SystemWideSlackChannel);
-        String channelForFallback = paramProvider.get("system.slack.channel_for_fallback_only");
+        String preDefinedChannel = paramProvider.get(SlackParameters.SystemWideSlackChannel);
 
-        String urlKey = paramProvider.get(SlackNotificator.SystemWideSlackUrlKey);
-        String teamcityBotName = paramProvider.get(SlackNotificator.SystemWideSlackUserName);
+        String urlKey = paramProvider.get(SlackParameters.SystemWideSlackUrlKey);
+        String teamcityBotName = paramProvider.get(SlackParameters.SystemWideSlackUserName);
         PullRequestInfo pr = new PullRequestInfo(build);
 
-        if(StringUtils.isNotEmpty(channelForFallback) && channelForFallback.toLowerCase().equals(true)){
-            if(pr.getChannels().size() > 0){
-                preDefinedChannel = "";
-            }
-        }
         List<SlackWrapper> wrappers = SlackWrapperBuilder.getSlackWrappers(preDefinedChannel,
                 pr, urlKey, teamcityBotName, _server.getRootUrl(),
                 new ArrayList<String>());

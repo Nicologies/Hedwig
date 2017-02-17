@@ -1,6 +1,7 @@
 package com.enlivenhq.teamcity;
 
 import com.enlivenhq.slack.PullRequestInfo;
+import com.enlivenhq.slack.SlackParameters;
 import com.enlivenhq.slack.SlackWrapper;
 import com.enlivenhq.slack.StatusColor;
 import jetbrains.buildServer.messages.BuildMessage1;
@@ -26,7 +27,7 @@ public class ServiceMessageHandler implements ServiceMessageTranslator {
     public List<BuildMessage1> translate(@NotNull SRunningBuild sRunningBuild, @NotNull BuildMessage1 buildMessage1,
                                          @NotNull ServiceMessage serviceMessage) {
         List<BuildMessage1> ret = Arrays.asList(buildMessage1);
-        String urlKey = sRunningBuild.getParametersProvider().get(SlackNotificator.SystemWideSlackUrlKey);
+        String urlKey = sRunningBuild.getParametersProvider().get(SlackParameters.SystemWideSlackUrlKey);
         if(StringUtils.isEmpty(urlKey)) {
             return ret;
         }
@@ -65,7 +66,7 @@ public class ServiceMessageHandler implements ServiceMessageTranslator {
 
         String userName = getSlackUserName(sRunningBuild, attributes);
 
-        String sysWideChannel = sRunningBuild.getParametersProvider().get(SlackNotificator.SystemWideSlackChannel);
+        String sysWideChannel = sRunningBuild.getParametersProvider().get(SlackParameters.SystemWideSlackChannel);
 
         List<String> sendToChannels = getChannels(attributes);
 
@@ -88,7 +89,7 @@ public class ServiceMessageHandler implements ServiceMessageTranslator {
     private String getSlackUserName(@NotNull SRunningBuild sRunningBuild, Map<String, String> attributes) {
         String userName = attributes.get("UserName");
         if (StringUtils.isEmpty(userName)) {
-            userName = sRunningBuild.getParametersProvider().get(SlackNotificator.SystemWideSlackUserName);
+            userName = sRunningBuild.getParametersProvider().get(SlackParameters.SystemWideSlackUserName);
             if (StringUtils.isEmpty(userName)) {
                 userName = "Teamcity";
             }

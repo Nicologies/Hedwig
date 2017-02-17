@@ -1,6 +1,5 @@
 package com.enlivenhq.slack;
 
-import com.enlivenhq.teamcity.SlackNotificator;
 import com.enlivenhq.teamcity.SlackPayload;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -20,7 +19,7 @@ import java.util.Map;
 public class SlackWrapper
 {
     public static final GsonBuilder GSON_BUILDER = new GsonBuilder().excludeFieldsWithoutExposeAnnotation();
-    private static final Logger LOG = Logger.getLogger(SlackNotificator.class);
+    private static final Logger LOG = Logger.getLogger(SlackWrapper.class);
     protected String slackUrl;
 
     protected String username;

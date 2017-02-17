@@ -10,7 +10,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 
 public class SlackWrapperBuilder {
-    private static final Logger log = Logger.getLogger(SlackNotificator.class);
+    private static final Logger log = Logger.getLogger(SlackWrapperBuilder.class);
     public static List<SlackWrapper> getSlackWrappers(String configuredChannelOfTheUser,
                                                       PullRequestInfo pr, String urlKey,
                                                       String slackBotName, String teamcityServerUrl,
