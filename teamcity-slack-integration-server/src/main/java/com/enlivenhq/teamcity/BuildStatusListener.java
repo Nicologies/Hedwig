@@ -2,7 +2,8 @@ package com.enlivenhq.teamcity;
 
 import com.enlivenhq.github.PullRequestInfo;
 import com.enlivenhq.slack.SlackParameters;
-import com.enlivenhq.slack.SlackWrapper;
+import com.enlivenhq.slack.SlackMessenger;
+import com.enlivenhq.slack.SlackMessengerFactory;
 import com.enlivenhq.slack.StatusColor;
 import jetbrains.buildServer.messages.Status;
 import jetbrains.buildServer.parameters.ParametersProvider;
@@ -64,15 +65,15 @@ public class BuildStatusListener extends BuildServerAdapter{
         String teamcityBotName = paramProvider.get(SlackParameters.SystemWideSlackUserName);
         PullRequestInfo pr = new PullRequestInfo(build);
 
-        List<SlackWrapper> wrappers = SlackWrapperBuilder.getSlackWrappers(preDefinedChannel,
+        List<SlackMessenger> messengers = SlackMessengerFactory.get(preDefinedChannel,
                 pr, urlKey, teamcityBotName, _server.getRootUrl(),
                 new ArrayList<String>());
 
-        for(SlackWrapper slack : wrappers){
+        for(SlackMessenger messenger : messengers){
             try {
                 BuildInfo bdInfo = new BuildInfo(build, statusText, statusColor,
                         pr.Branch, new HashMap<String, String>());
-                slack.send(bdInfo);
+                messenger.send(bdInfo);
             } catch (IOException e) {
                 e.printStackTrace();
                 log.error(e.getMessage());

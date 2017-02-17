@@ -2,7 +2,8 @@ package com.enlivenhq.teamcity;
 
 import com.enlivenhq.github.PullRequestInfo;
 import com.enlivenhq.slack.SlackParameters;
-import com.enlivenhq.slack.SlackWrapper;
+import com.enlivenhq.slack.SlackMessenger;
+import com.enlivenhq.slack.SlackMessengerFactory;
 import com.enlivenhq.slack.StatusColor;
 import jetbrains.buildServer.messages.BuildMessage1;
 import jetbrains.buildServer.messages.serviceMessages.ServiceMessage;
@@ -71,12 +72,12 @@ public class ServiceMessageHandler implements ServiceMessageTranslator {
         List<String> sendToChannels = getChannels(attributes);
 
         PullRequestInfo prInfo = getPullRequestInfo(sRunningBuild, attributes);
-        List<SlackWrapper> slackWrappers = SlackWrapperBuilder.getSlackWrappers(sysWideChannel, prInfo, urlKey,
+        List<SlackMessenger> slackMessengers = SlackMessengerFactory.get(sysWideChannel, prInfo, urlKey,
                 userName, _server.getRootUrl(), sendToChannels);
-        for(SlackWrapper slackWrapper : slackWrappers){
+        for(SlackMessenger slackMessenger : slackMessengers){
             try {
                 BuildInfo build = new BuildInfo(sRunningBuild, status, statusColor, prInfo.Branch, messages);
-                slackWrapper.send(build);
+                slackMessenger.send(build);
             } catch (IOException e) {
                 e.printStackTrace();
                 LOG.error("Failed to send slack message", e);

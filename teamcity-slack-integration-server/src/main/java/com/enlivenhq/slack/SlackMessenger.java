@@ -12,10 +12,10 @@ import javax.net.ssl.HttpsURLConnection;
 import java.io.*;
 import java.net.URL;
 
-public class SlackWrapper
+public class SlackMessenger
 {
     public static final GsonBuilder GSON_BUILDER = new GsonBuilder().excludeFieldsWithoutExposeAnnotation();
-    private static final Logger LOG = Logger.getLogger(SlackWrapper.class);
+    private static final Logger LOG = Logger.getLogger(SlackMessenger.class);
     protected String slackUrl;
 
     protected String username;
@@ -26,7 +26,7 @@ public class SlackWrapper
 
     protected String pullRequestUrl;
 
-    public SlackWrapper () {
+    public SlackMessenger() {
     }
 
     public void send(BuildInfo build) throws IOException {
@@ -76,7 +76,6 @@ public class SlackWrapper
                 WebUtil.escapeUrlForQuotes(getServerUrl()), WebUtil.escapeUrlForQuotes(pullRequestUrl));
         slackPayload.setChannel(getChannel());
         slackPayload.setUsername(getUsername());
-        slackPayload.setUseAttachments(true);
 
         return gson.toJson(slackPayload);
     }

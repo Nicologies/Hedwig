@@ -1,7 +1,6 @@
-package com.enlivenhq.teamcity;
+package com.enlivenhq.slack;
 
 import com.enlivenhq.github.PullRequestInfo;
-import com.enlivenhq.slack.SlackWrapper;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
@@ -9,12 +8,12 @@ import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 
-public class SlackWrapperBuilder {
-    private static final Logger log = Logger.getLogger(SlackWrapperBuilder.class);
-    public static List<SlackWrapper> getSlackWrappers(String configuredChannelOfTheUser,
-                                                      PullRequestInfo pr, String urlKey,
-                                                      String slackBotName, String teamcityServerUrl,
-                                                      List<String> additionalChannels){
+public class SlackMessengerFactory {
+    private static final Logger log = Logger.getLogger(SlackMessengerFactory.class);
+    public static List<SlackMessenger> get(String configuredChannelOfTheUser,
+                                           PullRequestInfo pr, String urlKey,
+                                           String slackBotName, String teamcityServerUrl,
+                                           List<String> additionalChannels){
         List<String> channels = pr.getChannels();
         if(StringUtils.isNotEmpty(configuredChannelOfTheUser)) {
             channels.add(0, configuredChannelOfTheUser);
@@ -23,7 +22,7 @@ public class SlackWrapperBuilder {
             channels.addAll(additionalChannels);
         }
         channels = new ArrayList<String>(new LinkedHashSet<String>(channels));// remove duplicate channels
-        List<SlackWrapper> ret = new ArrayList<SlackWrapper>(channels.size());
+        List<SlackMessenger> ret = new ArrayList<SlackMessenger>(channels.size());
         for(String channel : channels) {
             if (slackConfigurationIsInvalid(channel, slackBotName, urlKey)) {
                 log.error("Could not send Slack notification. The Slack channel, username, or URL was null. " +
@@ -40,16 +39,16 @@ public class SlackWrapperBuilder {
         return channel == null || username == null || url == null;
     }
 
-    private static SlackWrapper constructSlackWrapper(String channel, String username, String url, String pullReqUrl,
-                                                      String teamcityServerUrl) {
-        SlackWrapper slackWrapper = new SlackWrapper();
+    private static SlackMessenger constructSlackWrapper(String channel, String username, String url, String pullReqUrl,
+                                                        String teamcityServerUrl) {
+        SlackMessenger slackMessenger = new SlackMessenger();
 
-        slackWrapper.setChannel(channel);
-        slackWrapper.setUsername(username);
-        slackWrapper.setSlackUrl(url);
-        slackWrapper.setPullRequestUrl(pullReqUrl);
-        slackWrapper.setServerUrl(teamcityServerUrl);
+        slackMessenger.setChannel(channel);
+        slackMessenger.setUsername(username);
+        slackMessenger.setSlackUrl(url);
+        slackMessenger.setPullRequestUrl(pullReqUrl);
+        slackMessenger.setServerUrl(teamcityServerUrl);
 
-        return slackWrapper;
+        return slackMessenger;
     }
 }
