@@ -1,8 +1,8 @@
 package com.enlivenhq.teamcity;
 
+import com.enlivenhq.Messenger.MessengerFactory;
 import com.enlivenhq.github.PullRequestInfo;
 import com.enlivenhq.slack.SlackParameters;
-import com.enlivenhq.slack.SlackMessengerFactory;
 import com.enlivenhq.slack.StatusColor;
 import jetbrains.buildServer.messages.BuildMessage1;
 import jetbrains.buildServer.messages.serviceMessages.ServiceMessage;
@@ -69,7 +69,7 @@ public class ServiceMessageHandler implements ServiceMessageTranslator {
 
         PullRequestInfo prInfo = getPullRequestInfo(sRunningBuild, attributes);
         BuildInfo build = new BuildInfo(sRunningBuild, status, statusColor, prInfo, messages);
-        SlackMessengerFactory.sendMsg(build, urlKey,
+        MessengerFactory.sendMsg(build, urlKey,
                 userName, _server.getRootUrl(), sendToChannels);
 
         return ret;

@@ -1,6 +1,7 @@
-package com.enlivenhq.slack;
+package com.enlivenhq.Messenger;
 
 import com.enlivenhq.github.PullRequestInfo;
+import com.enlivenhq.slack.SlackMessenger;
 import com.enlivenhq.teamcity.BuildInfo;
 import org.apache.log4j.Logger;
 
@@ -9,11 +10,11 @@ import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 
-public class SlackMessengerFactory {
-    private static final Logger log = Logger.getLogger(SlackMessengerFactory.class);
+public class MessengerFactory {
+    private static final Logger log = Logger.getLogger(MessengerFactory.class);
     private static List<SlackMessenger> get(PullRequestInfo pr, String urlKey,
-                                           String slackBotName, String teamcityServerUrl,
-                                           List<String> additionalChannels){
+                                            String slackBotName, String teamcityServerUrl,
+                                            List<String> additionalChannels){
         List<String> channels = pr.getChannels();
         if(additionalChannels != null){
             channels.addAll(additionalChannels);
