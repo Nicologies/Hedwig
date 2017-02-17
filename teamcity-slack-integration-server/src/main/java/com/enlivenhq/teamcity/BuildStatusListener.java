@@ -57,13 +57,11 @@ public class BuildStatusListener extends BuildServerAdapter{
     private void SendNotificationForBuild(SRunningBuild build, String statusText, StatusColor statusColor) {
         ParametersProvider paramProvider = build.getParametersProvider();
 
-        String urlKey = paramProvider.get(SlackParameters.SystemWideSlackUrlKey);
-        String teamcityBotName = paramProvider.get(SlackParameters.SystemWideSlackUserName);
         PullRequestInfo pr = new PullRequestInfo(build);
         BuildInfo bdInfo = new BuildInfo(build, statusText, statusColor,
                 pr, new HashMap<String, String>());
 
-        MessengerFactory.sendMsg(bdInfo, urlKey, teamcityBotName, _server.getRootUrl(),
+        MessengerFactory.sendMsg(bdInfo, paramProvider, _server.getRootUrl(),
                 new ArrayList<String>());
 
 

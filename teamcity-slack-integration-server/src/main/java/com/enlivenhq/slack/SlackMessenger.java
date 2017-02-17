@@ -1,5 +1,6 @@
 package com.enlivenhq.slack;
 
+import com.enlivenhq.Messenger.IMessenger;
 import com.enlivenhq.teamcity.BuildInfo;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -11,7 +12,7 @@ import javax.net.ssl.HttpsURLConnection;
 import java.io.*;
 import java.net.URL;
 
-public class SlackMessenger
+public class SlackMessenger implements IMessenger
 {
     public static final GsonBuilder GSON_BUILDER = new GsonBuilder().excludeFieldsWithoutExposeAnnotation();
     private static final Logger LOG = Logger.getLogger(SlackMessenger.class);

@@ -2,7 +2,6 @@ package com.enlivenhq.teamcity;
 
 import com.enlivenhq.Messenger.MessengerFactory;
 import com.enlivenhq.github.PullRequestInfo;
-import com.enlivenhq.slack.SlackParameters;
 import com.enlivenhq.slack.StatusColor;
 import jetbrains.buildServer.messages.BuildMessage1;
 import jetbrains.buildServer.messages.serviceMessages.ServiceMessage;
@@ -10,13 +9,11 @@ import jetbrains.buildServer.messages.serviceMessages.ServiceMessageTranslator;
 import jetbrains.buildServer.serverSide.SBuildServer;
 import jetbrains.buildServer.serverSide.SRunningBuild;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
 public class ServiceMessageHandler implements ServiceMessageTranslator {
-    private static final Logger LOG = Logger.getLogger(ServiceMessageHandler.class);
     private SBuildServer _server;
 
     public ServiceMessageHandler(SBuildServer server){
@@ -26,10 +23,6 @@ public class ServiceMessageHandler implements ServiceMessageTranslator {
     public List<BuildMessage1> translate(@NotNull SRunningBuild sRunningBuild, @NotNull BuildMessage1 buildMessage1,
                                          @NotNull ServiceMessage serviceMessage) {
         List<BuildMessage1> ret = Arrays.asList(buildMessage1);
-        String urlKey = sRunningBuild.getParametersProvider().get(SlackParameters.SystemWideSlackUrlKey);
-        if(StringUtils.isEmpty(urlKey)) {
-            return ret;
-        }
 
         Map<String, String> attributes = serviceMessage.getAttributes();
 
@@ -63,28 +56,13 @@ public class ServiceMessageHandler implements ServiceMessageTranslator {
             }
         }
 
-        String userName = getSlackUserName(sRunningBuild, attributes);
-
         List<String> sendToChannels = getChannels(attributes);
 
         PullRequestInfo prInfo = getPullRequestInfo(sRunningBuild, attributes);
         BuildInfo build = new BuildInfo(sRunningBuild, status, statusColor, prInfo, messages);
-        MessengerFactory.sendMsg(build, urlKey,
-                userName, _server.getRootUrl(), sendToChannels);
+        MessengerFactory.sendMsg(build, sRunningBuild.getParametersProvider(), _server.getRootUrl(), sendToChannels);
 
         return ret;
-    }
-
-    @NotNull
-    private String getSlackUserName(@NotNull SRunningBuild sRunningBuild, Map<String, String> attributes) {
-        String userName = attributes.get("UserName");
-        if (StringUtils.isEmpty(userName)) {
-            userName = sRunningBuild.getParametersProvider().get(SlackParameters.SystemWideSlackUserName);
-            if (StringUtils.isEmpty(userName)) {
-                userName = "Teamcity";
-            }
-        }
-        return userName;
     }
 
     @NotNull

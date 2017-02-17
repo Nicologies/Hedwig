@@ -5,7 +5,7 @@ import com.enlivenhq.slack.StatusColor
 import jetbrains.buildServer.Build
 
 class BuildInfo constructor(build: Build, var statusText:String, var statusColor: StatusColor,
-                            var prInfo: PullRequestInfo, var messages: Map<String, String>) {
+                                   var prInfo: PullRequestInfo, var messages: Map<String, String>) {
     var buildId = build.buildId
     var buildTypeExternalId = build.buildTypeExternalId
     var buildFullName = build.fullName

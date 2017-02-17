@@ -34,7 +34,7 @@ public class PullRequestInfo {
 
         Branch = Utils.getBranchName(build);
     }
-    public List<String> getChannels(){
+    public List<String> getRecipients(){
         List<String> ret = new ArrayList<String>();
         AddUserToMentionList(ret, _author);
         AddUserToMentionList(ret, _assignee);
