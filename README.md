@@ -1,47 +1,45 @@
-# teamcity-slack
-[![Build Status](https://teamcity.jetbrains.com/app/rest/builds/buildType:(id:TeamCityThirdPartyPlugins_TeamcitySlackNotifications_Build)/statusIcon.svg)](https://teamcity.jetbrains.com/viewType.html?buildTypeId=TeamCityThirdPartyPlugins_TeamcitySlackNotifications_Build)
+# Hedwig
 
-A configurable TeamCity plugin that notifies your [Slack](https://slack.com) recipient.
-Because it is a [TeamCity Custom Notifier](http://confluence.jetbrains.com/display/TCD8/Custom+Notifier) plugin, it extends the existing user interface and allows for easy configuration directly within your TeamCity server. Once installed, you can configure the plugin for multiple TeamCity projects and multiple build conditions (i.e. Build failures, successes, hangs, etc.)
+A configurable TeamCity plugin that notifies your [Slack](https://slack.com) or [Hipchat](https://www.hipchat.com/) recipients.
+
+With this plugin you will be notified if a build fails and if you 
+
+- are the author, assignee, or you've commented on a pull request being built
+- triggerred the build
+
+Additionally, you can also send out message using Teamcity's Service Message facility.
 
 ## Installation
-Download the [plugin zip package](/target/teamcity-slack-integration.zip).
+
+Install [PrExtras](https://github.com/Nicologies/PrExtras) and [UserMapping](https://github.com/Nicologies/usermapping)
+
+Download the [plugin](https://github.com/Nicologies/Hedwig/releases/latest).
 
 Follow the TeamCity [plugin installation directions](http://confluence.jetbrains.com/display/TCD8/Installing+Additional+Plugins).
 
 ## Configuration
 
+### Slack
+
 Create an [incoming webook](https://my.slack.com/services/new/incoming-webhook) in Slack.
 
-Pick a Slack recipient to notify on build events.
+Pick a Slack channel as required by Slack, but we won't actually send any message to this channel.
 
-Pick a Slack username to use for automated notifications.
+Pick a Slack bot name as required by Slack, but we won't actually use this bot name to send notifications.
 
-Copy the URL for the webhook.
+Copy the URL for the webhook. As an admin, create a teamcity parameter `system.slack.url_key` with the value of the Slack webhook url, and create another parameter `system.slack.bot_name` with the bot name you have chosen.
 
-As an admin, Navigate to your TeamCity profile page ("My Settings & Tools") and click "Edit".
+### Hipchat
+to be added
 
-Enter the recipient name, username, and full webhook URL in the Notification settings as seen below.
+### User Mapping
 
-Add notification rules as appropriate.
+You may want to configure  [UserMapping](https://github.com/Nicologies/usermapping) if your GitHub/TeamCity username is different to the slack username.
 
-## Configuration Example
+## Sendout a service message
 
-![Configuration Settings](/configuration%20example.png)
+```
+"##teamcity[Hedwig Status='Succeeded' StatusType='Succeeded' MsgName0='DropFolder' MsgValue0='%Embed.DropFolder%' PrAuthor='%teamcity.build.pull_req.author%' PrAssignee='%teamcity.build.pull_req.assignee%' PrUrl='%teamcity.build.pull_req.url%' Branch='%teamcity.build.pull_req.branch_name%' Users='%teamcity.build.triggered_by.mapped_user%;%teamcity.build.pull_req.participants%']"
+```
 
-## Warning
-
-Tested mostly with TeamCity version 8.1.1 but we've definitely seen lots of folks using it with newer version as well.
-
-## Contributors
-
-[Jesse Dunlap](https://twitter.com/jessedunlap)
-
-[Andrew Clark](https://twitter.com/andrew_jclark)
-
-[cy6erskunk] (https://github.com/cy6erskunk)
-
-[Ian Robinson](https://twitter.com/irobinson)
-
-## License
-MIT
+You can add a lot of messages as you want, just name it as `MsgNameX='The name', MsgValueX='The value'` where `X` is a number.
