@@ -1,6 +1,6 @@
 package com.nicologis.teamcity;
 
-import com.nicologis.Messenger.MessengerFactory;
+import com.nicologis.messenger.MessengerFactory;
 import com.nicologis.github.PullRequestInfo;
 import com.nicologis.slack.StatusColor;
 import jetbrains.buildServer.messages.Status;
@@ -23,14 +23,6 @@ public class BuildStatusListener extends BuildServerAdapter{
         _server = server;
         _server.addListener(this);
     }
-    @Override
-    public void buildStarted(SRunningBuild build) {
-        String reportStarting = build.getParametersProvider().get("system.slack.report_starting");
-        if(StringUtils.isNotEmpty(reportStarting) && reportStarting.toLowerCase().equals("true")){
-            String statusText = "started";
-            SendNotificationForBuild(build, statusText, StatusColor.warning);
-        }
-    }
 
     @Override
     public void buildFinished(SRunningBuild build) {
@@ -38,18 +30,8 @@ public class BuildStatusListener extends BuildServerAdapter{
         Status buildStatus = build.getBuildStatus();
 
         if (buildStatus.equals(Status.FAILURE) || buildStatus.equals(Status.ERROR)) {
-            String reportFailure = build.getParametersProvider().get("system.slack.report_failure");
-            if (StringUtils.isNotEmpty(reportFailure) && reportFailure.toLowerCase().equals("true")) {
-                String statusText = "failed: " + build.getStatusDescriptor().getText();
-                SendNotificationForBuild(build, statusText, StatusColor.danger);
-            }
-        }
-        else if(buildStatus.equals(Status.NORMAL) || buildStatus.equals(Status.WARNING)){
-            String reportSuccess = build.getParametersProvider().get("system.slack.report_success");
-            if(StringUtils.isNotEmpty(reportSuccess) && reportSuccess.toLowerCase().equals("true")){
-                String statusText = "built successfully. Finished: " + build.getStatusDescriptor().getText();
-                SendNotificationForBuild(build, statusText, StatusColor.good);
-            }
+            String statusText = "failed: " + build.getStatusDescriptor().getText();
+            SendNotificationForBuild(build, statusText, StatusColor.danger);
         }
     }
 
@@ -58,9 +40,9 @@ public class BuildStatusListener extends BuildServerAdapter{
 
         PullRequestInfo pr = new PullRequestInfo(build);
         BuildInfo bdInfo = new BuildInfo(build, statusText, statusColor,
-                pr, new HashMap<String, String>());
+                pr, new HashMap<>(), _server.getRootUrl());
 
-        MessengerFactory.sendMsg(bdInfo, paramProvider, _server.getRootUrl(),
-                new ArrayList<String>());
+        MessengerFactory.sendMsg(bdInfo, paramProvider,
+                new ArrayList<>());
     }
 }

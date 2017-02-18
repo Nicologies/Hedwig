@@ -27,7 +27,7 @@ Pick a Slack channel as required by Slack, but we won't actually send any messag
 
 Pick a Slack bot name as required by Slack, but we won't actually use this bot name to send notifications.
 
-Copy the URL for the webhook. As an admin, create a teamcity parameter `system.slack.url_key` with the value of the Slack webhook url, and create another parameter `system.slack.bot_name` with the bot name you have chosen.
+Copy the URL for the webhook. As an admin, create a teamcity parameter `system.hedwig.slack.webhook_url` with the value of the Slack webhook url, and create another parameter `system.hedwig.slack.bot_name` with the bot name you have chosen.
 
 ### Hipchat
 to be added

@@ -15,7 +15,7 @@
     <moduleSet>
        <useAllReactorProjects>true</useAllReactorProjects>
        <includes>
-           <include>com.nicologis.hedwig:hedwig-server</include>
+           <include>com.nicologies.hedwig:hedwig-server</include>
        </includes> 
        <binaries>
            <outputDirectory>server</outputDirectory>

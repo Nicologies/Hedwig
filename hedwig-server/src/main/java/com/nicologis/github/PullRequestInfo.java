@@ -1,11 +1,13 @@
 package com.nicologis.github;
 
+import com.nicologis.messenger.Recipient;
 import com.nicologis.teamcity.Utils;
 import jetbrains.buildServer.serverSide.SBuild;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class PullRequestInfo {
     private String _author;
@@ -34,8 +36,8 @@ public class PullRequestInfo {
 
         Branch = Utils.getBranchName(build);
     }
-    public List<String> getRecipients(){
-        List<String> ret = new ArrayList<String>();
+    public List<Recipient> getRecipients(){
+        List<String> ret = new ArrayList<>();
         AddUserToMentionList(ret, _author);
         AddUserToMentionList(ret, _assignee);
         AddUserToMentionList(ret, _triggeredBy);
@@ -44,14 +46,14 @@ public class PullRequestInfo {
                 AddUserToMentionList(ret, p);
             }
         }
-        return ret;
+        return ret.stream().map(x -> new Recipient(x, false))
+                .collect(Collectors.toList());
     }
 
     public void AddUserToMentionList(List<String> list, String user){
         if(StringUtils.isNotEmpty(user)) {
-            String mentionAssignee = "@" +user;
-            if(!list.contains(mentionAssignee)) {
-                list.add(mentionAssignee);
+            if(!list.contains(user)) {
+                list.add(user);
             }
         }
     }

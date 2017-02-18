@@ -11,7 +11,7 @@ public class Utils {
             return branchNameForPullRequest;
         }
         Branch branch = build.getBranch();
-        if (branch != null && branch.getName() != "<default>") {
+        if (branch != null && !branch.getName().equals("<default>")) {
             return branch.getDisplayName();
         } else {
             return "";

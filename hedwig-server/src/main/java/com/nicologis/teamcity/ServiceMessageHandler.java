@@ -1,7 +1,8 @@
 package com.nicologis.teamcity;
 
-import com.nicologis.Messenger.MessengerFactory;
+import com.nicologis.messenger.MessengerFactory;
 import com.nicologis.github.PullRequestInfo;
+import com.nicologis.messenger.Recipient;
 import com.nicologis.slack.StatusColor;
 import jetbrains.buildServer.messages.BuildMessage1;
 import jetbrains.buildServer.messages.serviceMessages.ServiceMessage;
@@ -56,11 +57,11 @@ public class ServiceMessageHandler implements ServiceMessageTranslator {
             }
         }
 
-        List<String> sendToChannels = getChannels(attributes);
+        List<Recipient> rooms = getRecipients(attributes);
 
         PullRequestInfo prInfo = getPullRequestInfo(sRunningBuild, attributes);
-        BuildInfo build = new BuildInfo(sRunningBuild, status, statusColor, prInfo, messages);
-        MessengerFactory.sendMsg(build, sRunningBuild.getParametersProvider(), _server.getRootUrl(), sendToChannels);
+        BuildInfo build = new BuildInfo(sRunningBuild, status, statusColor, prInfo, messages, _server.getRootUrl());
+        MessengerFactory.sendMsg(build, sRunningBuild.getParametersProvider(), rooms);
 
         return ret;
     }
@@ -89,18 +90,10 @@ public class ServiceMessageHandler implements ServiceMessageTranslator {
     }
 
     @NotNull
-    private List<String> getChannels(Map<String, String> attributes) {
-        List<String> sendToChannels = new ArrayList<String>();
-        String channelsStr = attributes.get("Channels");
-
-        if (StringUtils.isNotEmpty(channelsStr)) {
-            for(String channel : channelsStr.split(";")) {
-                if(StringUtils.isEmpty(channel)){
-                   continue;
-                }
-                sendToChannels.add(channel.trim());
-            }
-        }
+    private List<Recipient> getRecipients(Map<String, String> attributes) {
+        List<Recipient> recipients = new ArrayList<>();
+        GetRooms(attributes, recipients, "Channels");
+        GetRooms(attributes, recipients, "Rooms");
         String usersStr = attributes.get("Users");
         if (StringUtils.isNotEmpty(usersStr)) {
             for (String user : usersStr.split(";")) {
@@ -108,15 +101,27 @@ public class ServiceMessageHandler implements ServiceMessageTranslator {
                     continue;
                 }
                 String trimmedUser = user.trim();
-                if (!trimmedUser.startsWith("@")) {
-                    sendToChannels.add("@" + trimmedUser);
-                } else {
-                    sendToChannels.add(trimmedUser);
+                if (trimmedUser.startsWith("@")) {
+                    trimmedUser = trimmedUser.substring(1);
                 }
+                recipients.add(new Recipient(trimmedUser, false));
             }
         }
 
-        return sendToChannels;
+        return recipients;
+    }
+
+    private void GetRooms(Map<String, String> attributes, List<Recipient> recipients, String rooms) {
+        String channelsStr = attributes.get(rooms);
+
+        if (StringUtils.isNotEmpty(channelsStr)) {
+            for(String channel : channelsStr.split(";")) {
+                if(StringUtils.isEmpty(channel)){
+                   continue;
+                }
+                recipients.add(new Recipient(channel.trim(), true));
+            }
+        }
     }
 
     @NotNull

@@ -4,7 +4,7 @@
   <parent>
     <artifactId>hedwig</artifactId>
     <groupId>com.nicologies.hedwig</groupId>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
   </parent>
   <artifactId>hedwig-server</artifactId>
   <packaging>jar</packaging>
@@ -40,7 +40,17 @@
       <version>${kotlin.version}</version>
       <scope>test</scope>
     </dependency>
-
+    <dependency>
+      <groupId>io.evanwong.oss</groupId>
+      <artifactId>hipchat-java</artifactId>
+      <version>0.4.3</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-api</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
   </dependencies>
 
   <build>

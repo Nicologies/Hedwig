@@ -50,12 +50,10 @@ public class SlackPayload {
         this.username = botName;
     }
 
-    public SlackPayload(BuildInfo build,
-                        String serverUrl, String pullRequestUrl) {
+    public SlackPayload(BuildInfo build) {
         String branch = build.getBranchName();
         String escapedBranch = branch.length() > 0 ? " [" + branch + "]" : "";
-        String statusText = "<" + serverUrl + "/viewLog.html?buildId="
-                + build.getBuildId() + "&buildTypeId=" + build.getBuildTypeExternalId() + "|" + build.getStatusText() + ">";
+        String statusText = "<" + build.getBuildLink() + "|" + build.getStatusText() + ">";
 
         String statusEmoji;
         StatusColor statusColor = build.getStatusColor();
@@ -76,25 +74,13 @@ public class SlackPayload {
 
         Attachment attachment = new Attachment();
         attachment.color = statusColor.name();
-        attachment.pretext = "Build Status";
+        attachment.pretext = "Build Information";
         attachment.fallback = payloadText;
-        attachment.fields = new ArrayList<AttachmentField>();
+        attachment.fields = new ArrayList<>();
 
-        AttachmentField attachmentProject = new AttachmentField("Project", build.getBuildFullName(), false);
-        AttachmentField attachmentBuild = new AttachmentField("Build", build.getBuildNumber(), true);
-        AttachmentField attachmentStatus = new AttachmentField("Status", statusText, false);
-        AttachmentField attachmentBranch;
-
-        attachment.fields.add(attachmentProject);
-        attachment.fields.add(attachmentBuild);
-        if (branch.length() > 0) {
-            attachmentBranch = new AttachmentField("Branch", branch, false);
-            attachment.fields.add(attachmentBranch);
-        }
-        attachment.fields.add(attachmentStatus);
-
-        if(StringUtils.isNotEmpty(pullRequestUrl)){
-            AttachmentField prUrlField = new AttachmentField("PullRequest URL", pullRequestUrl, false);
+        String encodedPrUrl = build.getEncodedPrUrl();
+        if(StringUtils.isNotEmpty(encodedPrUrl)){
+            AttachmentField prUrlField = new AttachmentField("PullRequest URL", encodedPrUrl, false);
             attachment.fields.add(prUrlField);
         }
 
@@ -103,7 +89,7 @@ public class SlackPayload {
             attachment.fields.add(field);
         }
 
-        this.attachments = new ArrayList<Attachment>();
+        this.attachments = new ArrayList<>();
         this.attachments.add(0, attachment);
     }
 }
