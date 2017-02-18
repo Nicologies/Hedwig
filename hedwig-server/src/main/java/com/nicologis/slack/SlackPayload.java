@@ -1,5 +1,5 @@
-package com.enlivenhq.slack;
-import com.enlivenhq.teamcity.BuildInfo;
+package com.nicologis.slack;
+import com.nicologis.teamcity.BuildInfo;
 import com.google.gson.annotations.Expose;
 import org.apache.commons.lang.StringUtils;
 

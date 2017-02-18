@@ -1,9 +1,9 @@
-package com.enlivenhq.Messenger;
+package com.nicologis.Messenger;
 
-import com.enlivenhq.github.PullRequestInfo;
-import com.enlivenhq.slack.SlackMessenger;
-import com.enlivenhq.slack.SlackParameters;
-import com.enlivenhq.teamcity.BuildInfo;
+import com.nicologis.github.PullRequestInfo;
+import com.nicologis.slack.SlackMessenger;
+import com.nicologis.slack.SlackParameters;
+import com.nicologis.teamcity.BuildInfo;
 import jetbrains.buildServer.parameters.ParametersProvider;
 import org.apache.log4j.Logger;
 

@@ -1,8 +1,8 @@
-package com.enlivenhq.teamcity;
+package com.nicologis.teamcity;
 
-import com.enlivenhq.Messenger.MessengerFactory;
-import com.enlivenhq.github.PullRequestInfo;
-import com.enlivenhq.slack.StatusColor;
+import com.nicologis.Messenger.MessengerFactory;
+import com.nicologis.github.PullRequestInfo;
+import com.nicologis.slack.StatusColor;
 import jetbrains.buildServer.messages.BuildMessage1;
 import jetbrains.buildServer.messages.serviceMessages.ServiceMessage;
 import jetbrains.buildServer.messages.serviceMessages.ServiceMessageTranslator;

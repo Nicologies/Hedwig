@@ -1,6 +1,6 @@
-package com.enlivenhq.github;
+package com.nicologis.github;
 
-import com.enlivenhq.teamcity.Utils;
+import com.nicologis.teamcity.Utils;
 import jetbrains.buildServer.serverSide.SBuild;
 import org.apache.commons.lang.StringUtils;
 

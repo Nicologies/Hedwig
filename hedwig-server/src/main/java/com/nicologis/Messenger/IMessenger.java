@@ -1,6 +1,6 @@
-package com.enlivenhq.Messenger;
+package com.nicologis.Messenger;
 
-import com.enlivenhq.teamcity.BuildInfo;
+import com.nicologis.teamcity.BuildInfo;
 
 import java.io.IOException;
 

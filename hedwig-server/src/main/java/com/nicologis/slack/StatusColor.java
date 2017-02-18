@@ -1,4 +1,4 @@
-package com.enlivenhq.slack;
+package com.nicologis.slack;
 
 public enum StatusColor {
     good,

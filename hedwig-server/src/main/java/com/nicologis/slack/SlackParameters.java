@@ -1,4 +1,4 @@
-package com.enlivenhq.slack;
+package com.nicologis.slack;
 
 public class SlackParameters {
     public static final String SystemWideSlackUrlKey = "system.slack.url_key";

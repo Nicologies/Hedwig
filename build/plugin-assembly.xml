@@ -15,7 +15,7 @@
     <moduleSet>
        <useAllReactorProjects>true</useAllReactorProjects>
        <includes>
-           <include>com.enlivenhq.teamcity:teamcity-slack-integration-server</include>
+           <include>com.nicologis.hedwig:hedwig-server</include>
        </includes> 
        <binaries>
            <outputDirectory>server</outputDirectory>

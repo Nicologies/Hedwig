@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <teamcity-plugin xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:shemas-jetbrains-com:teamcity-plugin-v1-xml">
   <info>
-    <name>teamcity-slack-integration</name>
-    <display-name>Slack</display-name>
+    <name>hedwig</name>
+    <display-name>Hedwig</display-name>
     <version>@Version@</version>
-    <description>Post messages to your Slack instance for build events.</description>
-    <download-url>https://github.com/Nicologies/teamcity-slack/releases/latest</download-url>
+    <description>Post messages to your Slack or HipChat instance for build events.</description>
+    <download-url>https://github.com/Nicologies/hedwig/releases/latest</download-url>
     <email>nicologies@gmail.com</email>
     <vendor>
       <name>Nicologies</name>
-      <url>https://github.com/Nicologies/teamcity-slack/releases/latest</url>
-      <logo>http://enlivenhq.com/wp-content/themes/enlivenhq/_/images/enliven_circle.svg</logo>
+      <url>https://github.com/Nicologies/hedwig/releases/latest</url>
     </vendor>
   </info>
   <deployment use-separate-classloader="true" />

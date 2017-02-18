@@ -1,11 +1,11 @@
-package com.enlivenhq.teamcity
+package com.nicologis.teamcity
 
-import com.enlivenhq.github.PullRequestInfo
-import com.enlivenhq.slack.StatusColor
+import com.nicologis.github.PullRequestInfo
+import com.nicologis.slack.StatusColor
 import jetbrains.buildServer.Build
 
 class BuildInfo constructor(build: Build, var statusText:String, var statusColor: StatusColor,
-                                   var prInfo: PullRequestInfo, var messages: Map<String, String>) {
+                            var prInfo: PullRequestInfo, var messages: Map<String, String>) {
     var buildId = build.buildId
     var buildTypeExternalId = build.buildTypeExternalId
     var buildFullName = build.fullName

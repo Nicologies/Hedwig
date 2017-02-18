@@ -1,9 +1,8 @@
-package com.enlivenhq.teamcity;
+package com.nicologis.teamcity;
 
-import com.enlivenhq.Messenger.MessengerFactory;
-import com.enlivenhq.github.PullRequestInfo;
-import com.enlivenhq.slack.SlackParameters;
-import com.enlivenhq.slack.StatusColor;
+import com.nicologis.Messenger.MessengerFactory;
+import com.nicologis.github.PullRequestInfo;
+import com.nicologis.slack.StatusColor;
 import jetbrains.buildServer.messages.Status;
 import jetbrains.buildServer.parameters.ParametersProvider;
 import jetbrains.buildServer.serverSide.BuildServerAdapter;
@@ -63,7 +62,5 @@ public class BuildStatusListener extends BuildServerAdapter{
 
         MessengerFactory.sendMsg(bdInfo, paramProvider, _server.getRootUrl(),
                 new ArrayList<String>());
-
-
     }
 }

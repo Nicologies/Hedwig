@@ -2,7 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <artifactId>teamcity-slack-integration</artifactId>
+    <artifactId>hedwig</artifactId>
     <groupId>com.enlivenhq.teamcity</groupId>
     <version>1.0.1</version>
   </parent>
@@ -13,8 +13,8 @@
   </properties>
   <dependencies>
       <dependency>
-           <groupId>com.enlivenhq.teamcity</groupId>
-           <artifactId>teamcity-slack-integration-server</artifactId>
+           <groupId>com.nicologies.hedwig</groupId>
+           <artifactId>hedwig-server</artifactId>
            <version>1.0.1</version>
       </dependency>
   </dependencies>
@@ -54,7 +54,7 @@
                   <goal>single</goal>
                 </goals>
                 <configuration>
-                  <finalName>teamcity-slack-integration</finalName>
+                  <finalName>hedwig</finalName>
                   <outputDirectory>${project.parent.build.directory}</outputDirectory>
                   <appendAssemblyId>false</appendAssemblyId>
                   <descriptors>

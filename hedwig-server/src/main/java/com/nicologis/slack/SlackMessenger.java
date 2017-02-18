@@ -1,7 +1,7 @@
-package com.enlivenhq.slack;
+package com.nicologis.slack;
 
-import com.enlivenhq.Messenger.IMessenger;
-import com.enlivenhq.teamcity.BuildInfo;
+import com.nicologis.Messenger.IMessenger;
+import com.nicologis.teamcity.BuildInfo;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import jetbrains.buildServer.web.util.WebUtil;

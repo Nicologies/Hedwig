@@ -1,4 +1,4 @@
-package com.enlivenhq.teamcity;
+package com.nicologis.teamcity;
 
 import jetbrains.buildServer.serverSide.Branch;
 import jetbrains.buildServer.serverSide.SBuild;
