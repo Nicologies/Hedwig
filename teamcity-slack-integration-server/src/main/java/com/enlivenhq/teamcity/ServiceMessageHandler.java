@@ -121,6 +121,6 @@ public class ServiceMessageHandler implements ServiceMessageTranslator {
 
     @NotNull
     public String getServiceMessageName() {
-        return "Slack";
+        return "Hedwig";
     }
 }
