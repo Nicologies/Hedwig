@@ -18,9 +18,9 @@ public class SlackMessenger implements IMessenger
     private static final Logger LOG = Logger.getLogger(SlackMessenger.class);
     protected String slackUrl;
 
-    protected String username;
+    protected String botName;
 
-    protected String channel;
+    protected String recipient;
 
     protected String serverUrl;
 
@@ -74,8 +74,8 @@ public class SlackMessenger implements IMessenger
 
         SlackPayload slackPayload = new SlackPayload(build,
                 WebUtil.escapeUrlForQuotes(getServerUrl()), WebUtil.escapeUrlForQuotes(pullRequestUrl));
-        slackPayload.setChannel(getChannel());
-        slackPayload.setUsername(getUsername());
+        slackPayload.setRecipient(getRecipient());
+        slackPayload.setBotName(getBotName());
 
         return gson.toJson(slackPayload);
     }
@@ -105,24 +105,21 @@ public class SlackMessenger implements IMessenger
         return this.slackUrl;
     }
 
-    public void setUsername(String username)
-    {
-        this.username = username;
+    public void setBotName(String botName){
+        this.botName = botName;
     }
 
-    public String getUsername()
+    public String getBotName()
     {
-        return this.username;
+        return this.botName;
     }
 
-    public void setChannel(String channel)
-    {
-        this.channel = channel;
+    public void setRecipient(String recipient){
+        this.recipient = recipient;
     }
 
-    public String getChannel()
-    {
-        return this.channel;
+    public String getRecipient(){
+        return this.recipient;
     }
 
     public String getServerUrl() {

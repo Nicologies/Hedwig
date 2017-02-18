@@ -39,7 +39,7 @@ public class MessengerFactory {
 
         for(String recipient : recipients) {
             if (slackConfigurationIsInvalid(recipient, slackBotName, urlKey)) {
-                log.error("Could not send Slack notification. The Slack channel, username, or URL was null. " +
+                log.error("Could not send Slack notification. The Slack recipient, username, or URL was null. " +
                         "Double check your Notification settings");
             }else{
                 ret.add(createSlackMessenger(recipient, slackBotName, urlKey, pr.Url, teamcityServerUrl));
@@ -47,16 +47,16 @@ public class MessengerFactory {
         }
     }
 
-    private static boolean slackConfigurationIsInvalid(String channel, String username, String url) {
-        return channel == null || username == null || url == null;
+    private static boolean slackConfigurationIsInvalid(String recipient, String botName, String url) {
+        return recipient == null || botName == null || url == null;
     }
 
-    private static SlackMessenger createSlackMessenger(String channel, String username, String url, String pullReqUrl,
+    private static SlackMessenger createSlackMessenger(String recipient, String botName, String url, String pullReqUrl,
                                                        String teamcityServerUrl) {
         SlackMessenger slackMessenger = new SlackMessenger();
 
-        slackMessenger.setChannel(channel);
-        slackMessenger.setUsername(username);
+        slackMessenger.setRecipient(recipient);
+        slackMessenger.setBotName(botName);
         slackMessenger.setSlackUrl(url);
         slackMessenger.setPullRequestUrl(pullReqUrl);
         slackMessenger.setServerUrl(teamcityServerUrl);

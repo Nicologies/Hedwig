@@ -42,12 +42,12 @@ public class SlackPayload {
         protected boolean isShort;
     }
 
-    public void setChannel(String channel) {
-        this.channel = channel;
+    public void setRecipient(String recipient) {
+        this.channel = recipient;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setBotName(String botName) {
+        this.username = botName;
     }
 
     public SlackPayload(BuildInfo build,
