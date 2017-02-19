@@ -2,7 +2,7 @@
 
 A configurable TeamCity plugin that notifies your [Slack](https://slack.com) or [Hipchat](https://www.hipchat.com/) recipients.
 
-With this plugin you will be notified if a build fails and if you 
+With this plugin you will be notified if a build fails when you 
 
 - are the author, assignee, or you've commented on a pull request being built
 - triggerred the build
@@ -11,11 +11,11 @@ Additionally, you can also send out message using Teamcity's Service Message fac
 
 ## Installation
 
-Install [PrExtras](https://github.com/Nicologies/PrExtras) and [UserMapping](https://github.com/Nicologies/usermapping)
+Install the prerequisites:
+- [PrExtras](https://github.com/Nicologies/PrExtras) 
+- [UserMapping](https://github.com/Nicologies/usermapping)
 
-Download the [plugin](https://github.com/Nicologies/Hedwig/releases/latest).
-
-Follow the TeamCity [plugin installation directions](http://confluence.jetbrains.com/display/TCD8/Installing+Additional+Plugins).
+Download and install this [plugin](https://github.com/Nicologies/Hedwig/releases/latest).
 
 ## Configuration
 
@@ -32,17 +32,19 @@ Create another parameter `system.hedwig.slack.bot_name` with the bot name you ha
 
 ### Hipchat
 
-- Create a hipchat [personal token](https://helixleisure.hipchat.com/account/api) with the permissions of `Send Message` and `Send Notification`.
+- Create a hipchat [personal token](https://helixleisure.hipchat.com/account/api) with the permissions of 
+ - `Send Message` if you want to receive individual notifications
+ - `Send Notification` if you want to send message to a room when using TeamCity's `Service Message`
 - Define a teamcity parameter `system.hedwig.hipchat.token` with the token generated above.
 
 ### User Mapping
 
-You may want to configure  [UserMapping](https://github.com/Nicologies/usermapping) if your GitHub/TeamCity username is different to the slack username.
+Usually your user name of TeamCity/GitHub is different to Slack/HipChat, if this is the case then you may want to configure  [UserMapping](https://github.com/Nicologies/usermapping)
 
 ## Sendout a service message
 
 ```
-"##teamcity[Hedwig Status='Succeeded' StatusType='Succeeded' MsgName0='DropFolder' MsgValue0='%Embed.DropFolder%' PrAuthor='%teamcity.build.pull_req.author%' PrAssignee='%teamcity.build.pull_req.assignee%' PrUrl='%teamcity.build.pull_req.url%' Branch='%teamcity.build.pull_req.branch_name%' Users='%teamcity.build.triggered_by.mapped_user%;%teamcity.build.pull_req.participants%' Channels='room1;room2;room3']"
+"##teamcity[Hedwig Status='Succeeded' StatusType='Succeeded' MsgName0='DropFolder' MsgValue0='%Embed.DropFolder%' PrAuthor='%teamcity.build.pull_req.author%' PrAssignee='%teamcity.build.pull_req.assignee%' PrUrl='%teamcity.build.pull_req.url%' Branch='%teamcity.build.pull_req.branch_name%' Users='%teamcity.build.triggered_by%;%teamcity.build.pull_req.participants%' Channels='room1;room2;room3']"
 ```
 
 You can add a lot of messages (<50 I guess) as you want, just name it as `MsgNameX='The name', MsgValueX='The value'` where `X` is a number.
