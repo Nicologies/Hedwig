@@ -44,7 +44,7 @@ Usually your user name of TeamCity/GitHub is different to Slack/HipChat, if this
 ## Sendout a service message
 
 ```
-"##teamcity[Hedwig Status='Succeeded' StatusType='Succeeded' MsgName0='DropFolder' MsgValue0='%Embed.DropFolder%' PrAuthor='%teamcity.build.pull_req.author%' PrAssignee='%teamcity.build.pull_req.assignee%' PrUrl='%teamcity.build.pull_req.url%' Branch='%teamcity.build.pull_req.branch_name%' Users='%teamcity.build.triggeredBy.username%;%teamcity.build.pull_req.participants%' Channels='room1;room2;room3']"
+"##teamcity[Hedwig Status='Succeeded' StatusType='Succeeded' MsgName0='DropFolder' MsgValue0='%DropFolderOfArtifacts%' PrAuthor='%teamcity.build.pull_req.author%' PrAssignee='%teamcity.build.pull_req.assignee%' PrUrl='%teamcity.build.pull_req.url%' Branch='%teamcity.build.pull_req.branch_name%' Users='%teamcity.build.triggeredBy.username%;%teamcity.build.pull_req.participants%' Channels='room1;room2;room3']"
 ```
 
 You can add a lot of messages (<50 I guess) as you want, just name it as `MsgNameX='The name', MsgValueX='The value'` where `X` is a number.
