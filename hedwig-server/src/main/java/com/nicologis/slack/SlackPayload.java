@@ -90,6 +90,8 @@ public class SlackPayload {
         }
 
         this.attachments = new ArrayList<>();
-        this.attachments.add(0, attachment);
+        if(!attachment.fields.isEmpty()) {
+            this.attachments.add(0, attachment);
+        }
     }
 }
