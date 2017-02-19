@@ -32,27 +32,27 @@ public class MessengerFactory {
         return botName == null || url == null;
     }
 
-    private static SlackMessenger createSlackMessenger(String botName, String webhookUrl) {
-        SlackMessenger slackMessenger = new SlackMessenger(webhookUrl, botName);
+    private static SlackMessenger createSlackMessenger(String botName, String webhookUrl, ParametersProvider params) {
+        SlackMessenger slackMessenger = new SlackMessenger(webhookUrl, botName, params);
 
         return slackMessenger;
     }
 
     public static void sendMsg(BuildInfo build,
-                               ParametersProvider paramProvider,
+                               ParametersProvider paramsProvider,
                                List<Recipient> additionalRecipients) {
-        String urlKey = paramProvider.get(ParameterNames.SlackWebHookURL);
-        String slackBotName = paramProvider.get(ParameterNames.SlackBotName);
+        String urlKey = paramsProvider.get(ParameterNames.SlackWebHookURL);
+        String slackBotName = paramsProvider.get(ParameterNames.SlackBotName);
         List<IMessenger> messengers = new ArrayList<IMessenger>(2);
         if (slackConfigurationIsInvalid(slackBotName, urlKey)) {
             log.warn("Could not send Slack notification. The Slack webhook URL or bot name was null. ");
         }else {
-            IMessenger slackMessenger = createSlackMessenger(slackBotName, urlKey);
+            IMessenger slackMessenger = createSlackMessenger(slackBotName, urlKey, paramsProvider);
             messengers.add(slackMessenger);
         }
-        String hipchatToken = paramProvider.get(ParameterNames.HipChatToken);
+        String hipchatToken = paramsProvider.get(ParameterNames.HipChatToken);
         if(StringUtil.isNotEmpty(hipchatToken)){
-            IMessenger hipchat = createHipchatMessenger(hipchatToken);
+            IMessenger hipchat = createHipchatMessenger(hipchatToken, paramsProvider);
             messengers.add(hipchat);
         }else{
             log.warn("Could not send hipchat notification. The token was null");
@@ -66,7 +66,7 @@ public class MessengerFactory {
         }
     }
 
-    private static IMessenger createHipchatMessenger(String hipchatToken) {
-        return new HipchatMessenger(hipchatToken);
+    private static IMessenger createHipchatMessenger(String hipchatToken, ParametersProvider paramsProvider) {
+        return new HipchatMessenger(hipchatToken, paramsProvider);
     }
 }

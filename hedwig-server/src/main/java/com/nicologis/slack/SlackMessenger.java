@@ -2,9 +2,11 @@ package com.nicologis.slack;
 
 import com.nicologis.messenger.IMessenger;
 import com.nicologis.messenger.Recipient;
+import com.nicologis.messenger.UserMappingSuffix;
 import com.nicologis.teamcity.BuildInfo;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import jetbrains.buildServer.parameters.ParametersProvider;
 import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
@@ -19,14 +21,17 @@ public class SlackMessenger implements IMessenger
     protected String _slackWebhookUrl;
 
     protected String _botName;
+    private ParametersProvider _params;
 
-    public SlackMessenger(String webhookUrl, String botName) {
+    public SlackMessenger(String webhookUrl, String botName, ParametersProvider params) {
         this._slackWebhookUrl = webhookUrl;
         this._botName = botName;
+        this._params = params;
     }
 
     public void send(BuildInfo build, Recipient recipient){
-        String formattedPayload = getFormattedPayload(build, recipient.getRecipientName());
+        String formattedPayload = getFormattedPayload(build,
+                recipient.getRecipientName(_params, UserMappingSuffix.slack));
         LOG.debug(formattedPayload);
         try {
 

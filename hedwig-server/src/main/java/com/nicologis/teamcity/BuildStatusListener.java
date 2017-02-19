@@ -8,15 +8,12 @@ import jetbrains.buildServer.parameters.ParametersProvider;
 import jetbrains.buildServer.serverSide.BuildServerAdapter;
 import jetbrains.buildServer.serverSide.SBuildServer;
 import jetbrains.buildServer.serverSide.SRunningBuild;
-import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class BuildStatusListener extends BuildServerAdapter{
-    private static final Logger log = Logger.getLogger(BuildStatusListener.class);
     private SBuildServer _server;
 
     public BuildStatusListener(@NotNull SBuildServer server){
