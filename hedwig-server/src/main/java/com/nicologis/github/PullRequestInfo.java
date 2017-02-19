@@ -24,10 +24,7 @@ public class PullRequestInfo {
 
         Url = build.getParametersProvider().get("teamcity.build.pull_req.url");
 
-        _triggeredBy = build.getParametersProvider().get("teamcity.build.triggered_by.mapped_user");
-        if(StringUtils.isEmpty(_triggeredBy)){
-           _triggeredBy = build.getParametersProvider().get("teamcity.build.triggeredBy.username");
-        }
+        _triggeredBy = build.getParametersProvider().get("teamcity.build.triggeredBy.username");
 
         String rawParticipants = build.getParametersProvider().get("teamcity.build.pull_req.participants");
         if(StringUtils.isNotEmpty(rawParticipants)){
