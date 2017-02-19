@@ -33,7 +33,9 @@ class HipchatMessenger(private val hipchatToken: String, private val paramsProvi
         sb.appendln("-------------------------------------------------------------------------------")
         sb.appendln("${build.statusText} ${build.buildFullName} ${build.branchName}")
         sb.appendln("build link: ${build.getBuildLink()}")
+        if(build.getEncodedPrUrl().isNotEmpty()) {
             sb.appendln("pull request: ${build.getEncodedPrUrl()}")
+        }
         build.messages.forEach { x -> sb.appendln("${x.key}: ${x.value}") }
         sb.appendln("-------------------------------------------------------------------------------")
         sb.appendln("")
