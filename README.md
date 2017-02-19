@@ -1,4 +1,4 @@
- # Hedwig
+# Hedwig
 
 A configurable TeamCity plugin that notifies your [Slack](https://slack.com) or [Hipchat](https://www.hipchat.com/) recipients.
 
