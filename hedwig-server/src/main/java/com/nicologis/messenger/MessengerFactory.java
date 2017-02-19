@@ -28,8 +28,8 @@ public class MessengerFactory {
         return recipients;
     }
 
-    private static boolean slackConfigurationIsInvalid(String botName, String url) {
-        return botName == null || url == null;
+    private static boolean slackConfigurationIsInvalid(String url) {
+        return url == null;
     }
 
     private static SlackMessenger createSlackMessenger(String botName, String webhookUrl, ParametersProvider params) {
@@ -43,8 +43,11 @@ public class MessengerFactory {
                                List<Recipient> additionalRecipients) {
         String urlKey = paramsProvider.get(ParameterNames.SlackWebHookURL);
         String slackBotName = paramsProvider.get(ParameterNames.SlackBotName);
+        if(StringUtil.isEmptyOrSpaces(slackBotName)){
+            slackBotName = "teamcity";
+        }
         List<IMessenger> messengers = new ArrayList<IMessenger>(2);
-        if (slackConfigurationIsInvalid(slackBotName, urlKey)) {
+        if (slackConfigurationIsInvalid(urlKey)) {
             log.warn("Could not send Slack notification. The Slack webhook URL or bot name was null. ");
         }else {
             IMessenger slackMessenger = createSlackMessenger(slackBotName, urlKey, paramsProvider);
