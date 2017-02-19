@@ -1,4 +1,4 @@
-# Hedwig
+ # Hedwig
 
 A configurable TeamCity plugin that notifies your [Slack](https://slack.com) or [Hipchat](https://www.hipchat.com/) recipients.
 
@@ -41,7 +41,7 @@ Create another parameter `system.hedwig.slack.bot_name` with the bot name you ha
 
 Usually your user name of TeamCity/GitHub is different to Slack/HipChat, if this is the case then you may want to configure  [UserMapping](https://github.com/Nicologies/usermapping)
 
-## Sendout a service message
+## Send out notifications via Service Message
 
 ```
 "##teamcity[Hedwig Status='Succeeded' StatusType='Succeeded' MsgName0='DropFolder' MsgValue0='%DropFolderOfArtifacts%' PrAuthor='%teamcity.build.pull_req.author%' PrAssignee='%teamcity.build.pull_req.assignee%' PrUrl='%teamcity.build.pull_req.url%' Branch='%teamcity.build.pull_req.branch_name%' Users='%teamcity.build.triggeredBy.username%;%teamcity.build.pull_req.participants%' Channels='room1;room2;room3']"
