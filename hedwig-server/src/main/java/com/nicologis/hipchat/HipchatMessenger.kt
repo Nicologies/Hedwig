@@ -30,12 +30,12 @@ class HipchatMessenger(private val hipchatToken: String, private val paramsProvi
 
     private fun constructMessage(build: BuildInfo): String{
         val sb = StringBuilder()
-        sb.appendln("-------------------------------------------------")
+        sb.appendln("-------------------------------------------------------------------------------")
         sb.appendln("${build.statusText} ${build.buildFullName} ${build.branchName}")
         sb.appendln("build link: ${build.getBuildLink()}")
-        sb.appendln("pull request: ${build.getEncodedPrUrl()}")
+            sb.appendln("pull request: ${build.getEncodedPrUrl()}")
         build.messages.forEach { x -> sb.appendln("${x.key}: ${x.value}") }
-        sb.appendln("-------------------------------------------------")
+        sb.appendln("-------------------------------------------------------------------------------")
         sb.appendln("")
         return sb.toString()
     }
