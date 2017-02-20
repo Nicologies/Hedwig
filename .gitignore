@@ -13,3 +13,4 @@ build/
 target/
 *.iml
 teamcity-slack-integration-server/target/
+*.versionsBackup
