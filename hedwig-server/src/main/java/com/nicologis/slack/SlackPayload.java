@@ -50,10 +50,19 @@ public class SlackPayload {
         this.username = botName;
     }
 
+    private String escape(String s) {
+        return s.replace("<", "&lt;").replace(">", "&gt;");
+    }
+
+    private String escapeNewline(String s) {
+        return s.replace("\n", "\\n");
+    }
+
     public SlackPayload(BuildInfo build) {
-        String branch = build.getBranchName();
+        String branch = escape(build.getBranchName());
         String escapedBranch = branch.length() > 0 ? " [" + branch + "]" : "";
-        String statusText = "<" + build.getBuildLink() + "|" + build.getStatusText() + ">";
+        String statusText = "<" + build.getBuildLink(x -> this.escape(x))
+                + "|" + escape(escapeNewline(build.getStatusText())) + ">";
 
         String statusEmoji;
         StatusColor statusColor = build.getStatusColor();

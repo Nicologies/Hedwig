@@ -32,7 +32,7 @@ class HipchatMessenger(private val hipchatToken: String, private val paramsProvi
         val sb = StringBuilder()
         sb.appendln("-------------------------------------------------------------------------------")
         sb.appendln("${build.statusText} ${build.buildFullName} ${build.branchName}")
-        sb.appendln("build link: ${build.getBuildLink()}")
+        sb.appendln("build link: ${build.getBuildLink({x -> x})}")
         if(build.getEncodedPrUrl().isNotEmpty()) {
             sb.appendln("pull request: ${build.getEncodedPrUrl()}")
         }
