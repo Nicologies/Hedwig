@@ -45,8 +45,8 @@ public class SlackMessenger implements IMessenger
             DataOutputStream dataOutputStream = new DataOutputStream(
                     httpsURLConnection.getOutputStream()
             );
-
-            dataOutputStream.writeBytes(formattedPayload);
+            byte[] array = formattedPayload.getBytes("UTF-8");
+            dataOutputStream.write(array, 0, array.length);
             dataOutputStream.flush();
             dataOutputStream.close();
             InputStream inputStream;
