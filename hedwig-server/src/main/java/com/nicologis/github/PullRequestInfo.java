@@ -1,6 +1,8 @@
 package com.nicologis.github;
 
+import com.intellij.openapi.util.text.StringUtil;
 import com.nicologis.messenger.Recipient;
+import com.nicologis.teamcity.ParameterNames;
 import com.nicologis.teamcity.Utils;
 import jetbrains.buildServer.serverSide.SBuild;
 import org.apache.commons.lang.StringUtils;
@@ -25,10 +27,12 @@ public class PullRequestInfo {
         Url = build.getParametersProvider().get("teamcity.build.pull_req.url");
 
         _triggeredBy = build.getParametersProvider().get("teamcity.build.triggeredBy.username");
-
-        String rawParticipants = build.getParametersProvider().get("teamcity.build.pull_req.participants");
-        if(StringUtils.isNotEmpty(rawParticipants)){
-            _participants = rawParticipants.split(";");
+        String notifyParticipants = build.getParametersProvider().get(ParameterNames.NotifyParticipants);
+        if(StringUtil.isNotEmpty(notifyParticipants) && notifyParticipants.toLowerCase().equals("true")) {
+            String rawParticipants = build.getParametersProvider().get("teamcity.build.pull_req.participants");
+            if (StringUtils.isNotEmpty(rawParticipants)) {
+                _participants = rawParticipants.split(";");
+            }
         }
 
         Branch = Utils.getBranchName(build);
