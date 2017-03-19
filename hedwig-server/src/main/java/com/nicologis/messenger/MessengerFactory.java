@@ -43,6 +43,14 @@ public class MessengerFactory {
                                List<Recipient> additionalRecipients) {
         String urlKey = paramsProvider.get(ParameterNames.SlackWebHookURL);
         String slackBotName = paramsProvider.get(ParameterNames.SlackBotName);
+        String exclusion = paramsProvider.get(ParameterNames.ExcludeMessage);
+        String statusText = build.getStatusText();
+        if(StringUtil.isNotEmpty(exclusion)) {
+            if (StringUtil.isNotEmpty(statusText)
+                    && statusText.contains(exclusion)) {
+                return;
+            }
+        }
         if(StringUtil.isEmptyOrSpaces(slackBotName)){
             slackBotName = "teamcity";
         }
