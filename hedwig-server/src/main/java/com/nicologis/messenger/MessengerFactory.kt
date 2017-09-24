@@ -44,7 +44,7 @@ object MessengerFactory {
         if (StringUtil.isEmptyOrSpaces(slackBotName)) {
             slackBotName = "teamcity"
         }
-        val messengers = ArrayList<IMessenger>(2)
+        val messengers = ArrayList<AbstractMessenger>(2)
         val urlKey = paramsProvider.get(ParameterNames.SlackWebHookURL)
         if (slackConfigurationIsInvalid(urlKey)) {
             log.warn("Could not send Slack notification. The Slack webhook URL or bot name was null. ")
@@ -61,14 +61,12 @@ object MessengerFactory {
         }
 
         val recipients = getRecipients(build.prInfo, additionalRecipients)
-        for (r in recipients) {
             for (m in messengers) {
-                m.send(build, r)
+                m.send(build, recipients)
             }
-        }
     }
 
-    private fun createHipchatMessenger(hipchatToken: String, paramsProvider: ParametersProvider): IMessenger {
+    private fun createHipchatMessenger(hipchatToken: String, paramsProvider: ParametersProvider): AbstractMessenger {
         return HipchatMessenger(hipchatToken, paramsProvider)
     }
 }

@@ -46,7 +46,7 @@ class PullRequestInfo(build: SBuild) {
                     addUserToMentionList(ret, p)
                 }
             }
-            return ret.map { x -> Recipient(x, false) }.toList()
+            return ret.map { x -> Recipient(x, x.startsWith("#")) }.toList()
         }
 
     private fun addUserToMentionList(list: MutableList<String>, user: String?) {

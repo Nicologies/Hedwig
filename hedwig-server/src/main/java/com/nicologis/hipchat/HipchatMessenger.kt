@@ -1,6 +1,6 @@
 package com.nicologis.hipchat
 
-import com.nicologis.messenger.IMessenger
+import com.nicologis.messenger.AbstractMessenger
 import com.nicologis.messenger.Recipient
 import com.nicologis.messenger.UserMappingSuffix
 import com.nicologis.slack.StatusColor
@@ -11,11 +11,12 @@ import io.evanwong.oss.hipchat.v2.rooms.MessageFormat
 import jetbrains.buildServer.parameters.ParametersProvider
 import org.apache.log4j.Logger
 
-class HipchatMessenger(private val hipchatToken: String, private val paramsProvider: ParametersProvider) : IMessenger {
+class HipchatMessenger(private val hipchatToken: String, private val paramsProvider: ParametersProvider)
+    : AbstractMessenger() {
     private val logger = Logger.getLogger(HipchatMessenger::class.java)
+
     override fun send(build: BuildInfo, recipient: Recipient) {
         try {
-
             val message = constructMessage(build)
             if (recipient.isRoom) {
                 sendMsgToRoom(recipient, message, build)
@@ -26,6 +27,12 @@ class HipchatMessenger(private val hipchatToken: String, private val paramsProvi
             ex.printStackTrace()
             logger.error(ex.message)
         }
+    }
+
+    override fun mapRecipients(build: BuildInfo, recipients: Collection<Recipient>): Collection<Recipient> {
+        return LinkedHashSet<Recipient>(recipients.map {
+            Recipient(it.getRecipientName(paramsProvider, UserMappingSuffix.hipchat), it.isRoom)
+        })
     }
 
     private fun constructMessage(build: BuildInfo): String{
