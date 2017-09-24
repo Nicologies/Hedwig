@@ -13,7 +13,7 @@ class BuildInfo constructor(build: Build, var statusText:String, var statusColor
     var buildFullName = build.fullName
     var buildNumber: String = build.buildNumber
     var branchName: String = prInfo.Branch
-    var prUrl : String = prInfo.Url
+    var prUrl : String? = prInfo.Url
 
     fun getBuildLink(escapeFunc : (org:String) -> String): String {
         val ret = "${this.serverUrl}/viewLog.html?buildId=${this.buildId}&buildTypeId=${escapeFunc(this.buildTypeExternalId)}"

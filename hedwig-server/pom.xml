@@ -9,11 +9,6 @@
   <artifactId>hedwig-server</artifactId>
   <packaging>jar</packaging>
 
-  <properties>
-    <kotlin.version>1.0.6</kotlin.version>
-  </properties>
-
-
   <dependencies>
 
     <dependency>

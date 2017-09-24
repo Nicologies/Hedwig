@@ -12,7 +12,7 @@ import jetbrains.buildServer.parameters.ParametersProvider
 import org.apache.log4j.Logger
 
 class HipchatMessenger(private val hipchatToken: String, private val paramsProvider: ParametersProvider) : IMessenger {
-    private val LOG = Logger.getLogger(HipchatMessenger::class.java)
+    private val logger = Logger.getLogger(HipchatMessenger::class.java)
     override fun send(build: BuildInfo, recipient: Recipient) {
         try {
 
@@ -24,7 +24,7 @@ class HipchatMessenger(private val hipchatToken: String, private val paramsProvi
             }
         }catch(ex: Exception){
             ex.printStackTrace()
-            LOG.error(ex.message)
+            logger.error(ex.message)
         }
     }
 
@@ -43,8 +43,8 @@ class HipchatMessenger(private val hipchatToken: String, private val paramsProvi
     }
 
     private fun sendMsgToRoom(recipient: Recipient, message: String, build: BuildInfo) {
-        val _client: HipChatClient = HipChatClient(hipchatToken)
-        val msgBuilder = _client.prepareSendRoomNotificationRequestBuilder(
+        val client = HipChatClient(hipchatToken)
+        val msgBuilder = client.prepareSendRoomNotificationRequestBuilder(
                 recipient.getRecipientName(paramsProvider, UserMappingSuffix.hipchat), message)
         msgBuilder.setColor(toHipchatColor(build.statusColor)).setMessageFormat(MessageFormat.TEXT)
                 .setNotify(true)
@@ -53,23 +53,23 @@ class HipchatMessenger(private val hipchatToken: String, private val paramsProvi
 
     private fun sendMsgToUser(recipient: Recipient, message: String) {
         try {
-            val _client: HipChatClient = HipChatClient(hipchatToken)
-            val msgBuilder = _client.preparePrivateMessageUserRequestBuilder(
+            val client = HipChatClient(hipchatToken)
+            val msgBuilder = client.preparePrivateMessageUserRequestBuilder(
                     recipient.getRecipientName(paramsProvider, UserMappingSuffix.hipchat), message)
             msgBuilder.setNotify(true).setMessageFormat(MessageFormat.TEXT)
                     .build().execute().get()
         }catch(ex: Exception){
             ex.printStackTrace()
-            LOG.error(ex.message)
+            logger.error(ex.message)
         }
     }
 
     private fun toHipchatColor(color: StatusColor): MessageColor{
-        when(color){
-            StatusColor.danger -> return MessageColor.RED
-            StatusColor.info -> return MessageColor.YELLOW
-            StatusColor.good -> return MessageColor.GREEN
-            else -> return MessageColor.GREEN
+        return when(color){
+            StatusColor.danger -> MessageColor.RED
+            StatusColor.info -> MessageColor.YELLOW
+            StatusColor.good -> MessageColor.GREEN
+            else -> MessageColor.GREEN
         }
     }
 }
