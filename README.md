@@ -12,8 +12,8 @@ Additionally, you can also send out message using Teamcity's Service Message fac
 ## Installation
 
 Install the prerequisites:
-- [PrExtras](https://github.com/Nicologies/PrExtras) 
-- [UserMapping](https://github.com/Nicologies/usermapping)
+- Install and configure [PrExtras](https://github.com/Nicologies/PrExtras) 
+- If your teamcity/github user name is different to the slack/hipchat one, then install and configure [UserMapping](https://github.com/Nicologies/usermapping)
 
 Download and install this [plugin](https://github.com/Nicologies/Hedwig/releases/latest).
 
