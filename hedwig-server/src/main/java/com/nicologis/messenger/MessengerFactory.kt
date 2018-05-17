@@ -1,7 +1,6 @@
 package com.nicologis.messenger
 
 import com.intellij.openapi.util.text.StringUtil
-import com.nicologis.github.PullRequestInfo
 import com.nicologis.hipchat.HipchatMessenger
 import com.nicologis.slack.SlackMessenger
 import com.nicologis.teamcity.ParameterNames
@@ -13,12 +12,7 @@ import java.util.*
 object MessengerFactory {
     private val log = Logger.getLogger(MessengerFactory::class.java)
 
-    private fun getRecipients(pr: PullRequestInfo, additionalRecipients: List<Recipient>?): HashSet<Recipient> {
-        var recipients: MutableList<Recipient> = ArrayList(pr.recipients)
-        if (additionalRecipients != null) {
-            recipients.addAll(additionalRecipients)
-        }
-
+    private fun distinctRecipients(recipients: List<Recipient>): HashSet<Recipient> {
         return LinkedHashSet(recipients)// remove duplicate recipients
     }
 
@@ -32,7 +26,7 @@ object MessengerFactory {
 
     fun sendMsg(build: BuildInfo,
                 paramsProvider: ParametersProvider,
-                additionalRecipients: List<Recipient>) {
+                recipients: List<Recipient>) {
         val exclusion = paramsProvider.get(ParameterNames.ExcludeMessage)
         val statusText = build.statusText
         if (StringUtil.isNotEmpty(exclusion)) {
@@ -60,10 +54,10 @@ object MessengerFactory {
             log.warn("Could not send hipchat notification. The token was null")
         }
 
-        val recipients = getRecipients(build.prInfo, additionalRecipients)
-            for (m in messengers) {
-                m.send(build, recipients)
-            }
+        val distinctRecipients = distinctRecipients(recipients)
+        for (m in messengers) {
+            m.send(build, distinctRecipients)
+        }
     }
 
     private fun createHipchatMessenger(hipchatToken: String, paramsProvider: ParametersProvider): AbstractMessenger {

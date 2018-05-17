@@ -32,7 +32,6 @@ class BuildStatusListener(private val _server: SBuildServer) : BuildServerAdapte
         val bdInfo = BuildInfo(build, statusText, statusColor,
                 pr, HashMap(), _server.rootUrl)
 
-        MessengerFactory.sendMsg(bdInfo, paramProvider,
-                ArrayList())
+        MessengerFactory.sendMsg(bdInfo, paramProvider, bdInfo.prInfo.recipients)
     }
 }
