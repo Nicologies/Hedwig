@@ -1,0 +1,13 @@
+language: java
+jdk:
+- oraclejdk8
+script: mvn package
+deploy:
+  skip_cleanup: true
+  provider: releases
+  api_key:
+    secure: rLYf/Q5SF1TLOa+2UlTta6p9At4MMTsslb+ydqj1hRFqcLAwCV7qBnah776xWmzM5W/22vktEbxRGLPH2Pi8jJb7igwlLfSSxDUkJspifk8jmhyCS6BFif7qrc1Ilyvt6riqTBXiRQdsKwLgivpGzgxLH0Acxd4Hwy+LV2vlUcN3MW1xuAwlmgrFGP+51nRSWSTDzu2mCy+q2rVr4YfGnA6YOTmWbC6VZIUQgKSyII4545oLZRrNSwUPcV72/BX+o58WEr+OeuqV5N+/WW8hCqCm+nY9mQOMPmV6JQlP92Fnt3fFUPSsGLvBFEL0uEAR/9gZIRiQdtOylrkBbYjXufsEPzU25gPJt+EDrX1SwD5+08p9e/zL8QC5iKPxtu7pprNO2cJY7ou5XCeJ3jnpSzaFhHcPV2JYNnrD4HgbFkV8265i0RiiB3AWsDMunreS+CvTbBdCQ7qzy84x3gp+WJwefjhZ9nwwEMYzIaGm+DQTNHLs4zyqINCnpEe6jG5QC0FLUS9W7GE2iA81lrlFpv0N8ZFANeUjn53d1x9httpo4OhF2KEpeuxFPDzkfBLpPauDfPQGRs9wzzhXRoyagcOafBeaP0T/1lvadtl9fCgjiyuhGxN8r+1cnYxpgrMsbO7HTGI5QvhdmAGM5bVBFcmJ/S6sQnLsv3zdbRwW/DI=
+  file: "./target/hedwig.zip"
+  on:
+    tags: true
+    all_branches: true
