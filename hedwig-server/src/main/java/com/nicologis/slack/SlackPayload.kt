@@ -27,10 +27,14 @@ class SlackPayload(build: BuildInfo) {
         var fields: MutableList<AttachmentField>? = null
     }
 
-    inner class AttachmentField(@field:Expose
-                                        protected var title: String, @field:Expose
-                                        protected var value: String, @field:Expose
-                                        protected var isShort: Boolean)
+    inner class AttachmentField(
+            @field:Expose
+            private var title: String,
+            @field:Expose
+            private var value: String,
+            @field:Expose
+            private var isShort: Boolean
+    )
 
     fun setRecipient(recipient: String) {
         this.channel = recipient
@@ -50,20 +54,17 @@ class SlackPayload(build: BuildInfo) {
 
     init {
         val branch = escape(build.branchName)
-        val escapedBranch = if (branch.length > 0) " [$branch]" else ""
+        val escapedBranch = if (branch.isNotEmpty()) " [$branch]" else ""
         val statusText = ("<" + build.getBuildLink { x -> this.escape(x) }
                 + "|" + escape(escapeNewline(build.statusText)) + ">")
 
         val statusEmoji: String
         val statusColor = build.statusColor
-        if (statusColor == StatusColor.danger) {
-            statusEmoji = ":x: "
-        } else if (statusColor == StatusColor.warning) {
-            statusEmoji = ""
-        } else if (statusColor == StatusColor.info) {
-            statusEmoji = ":information_source: "
-        } else {
-            statusEmoji = ":white_check_mark: "
+        statusEmoji = when (statusColor) {
+            StatusColor.danger -> ":x: "
+            StatusColor.warning -> ""
+            StatusColor.info -> ":information_source: "
+            else -> ":white_check_mark: "
         }
 
         val payloadText = (statusEmoji + build.buildFullName

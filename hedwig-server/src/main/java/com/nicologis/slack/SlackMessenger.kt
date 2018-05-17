@@ -73,7 +73,7 @@ class SlackMessenger(private var _slackWebhookUrl: String, private var _botName:
     }
 
     companion object {
-        val GSON_BUILDER = GsonBuilder().excludeFieldsWithoutExposeAnnotation()
+        val GSON_BUILDER = GsonBuilder().excludeFieldsWithoutExposeAnnotation()!!
         private val LOG = Logger.getLogger(SlackMessenger::class.java)
     }
 

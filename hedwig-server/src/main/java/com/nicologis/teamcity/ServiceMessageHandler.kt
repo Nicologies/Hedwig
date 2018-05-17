@@ -81,8 +81,8 @@ class ServiceMessageHandler(private val _server: SBuildServer) : ServiceMessageT
 
     private fun getRecipients(attributes: Map<String, String>): List<Recipient> {
         val recipients = ArrayList<Recipient>()
-        GetRooms(attributes, recipients, "Channels")
-        GetRooms(attributes, recipients, "Rooms")
+        getRooms(attributes, recipients, "Channels")
+        getRooms(attributes, recipients, "Rooms")
         val usersStr = attributes["Users"]
         if (StringUtils.isNotEmpty(usersStr)) {
             for (user in usersStr!!.split(";".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()) {
@@ -100,16 +100,14 @@ class ServiceMessageHandler(private val _server: SBuildServer) : ServiceMessageT
         return recipients
     }
 
-    private fun GetRooms(attributes: Map<String, String>, recipients: MutableList<Recipient>, rooms: String) {
+    private fun getRooms(attributes: Map<String, String>, recipients: MutableList<Recipient>, rooms: String) {
         val channelsStr = attributes[rooms]
 
         if (StringUtils.isNotEmpty(channelsStr)) {
-            for (channel in channelsStr!!.split(";".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()) {
-                if (StringUtils.isEmpty(channel)) {
-                    continue
-                }
-                recipients.add(Recipient(channel.trim { it <= ' ' }, true))
-            }
+            channelsStr!!.split(";".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+                    .asSequence()
+                    .filterNot { StringUtils.isEmpty(it) }
+                    .mapTo(recipients) { channel -> Recipient(channel.trim { it <= ' ' }, true) }
         }
     }
 

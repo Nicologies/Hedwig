@@ -2,7 +2,6 @@ package com.nicologis.teamcity
 
 import com.nicologis.github.PullRequestInfo
 import com.nicologis.messenger.MessengerFactory
-import com.nicologis.messenger.Recipient
 import com.nicologis.slack.StatusColor
 import jetbrains.buildServer.messages.Status
 import jetbrains.buildServer.serverSide.BuildServerAdapter
@@ -22,18 +21,18 @@ class BuildStatusListener(private val _server: SBuildServer) : BuildServerAdapte
 
         if (buildStatus == Status.FAILURE || buildStatus == Status.ERROR) {
             val statusText = "failed: " + build.statusDescriptor.text
-            SendNotificationForBuild(build, statusText, StatusColor.danger)
+            sendNotificationForBuild(build, statusText, StatusColor.danger)
         }
     }
 
-    private fun SendNotificationForBuild(build: SRunningBuild, statusText: String, statusColor: StatusColor) {
+    private fun sendNotificationForBuild(build: SRunningBuild, statusText: String, statusColor: StatusColor) {
         val paramProvider = build.parametersProvider
 
         val pr = PullRequestInfo(build)
         val bdInfo = BuildInfo(build, statusText, statusColor,
-                pr, HashMap<String, String>(), _server.rootUrl)
+                pr, HashMap(), _server.rootUrl)
 
         MessengerFactory.sendMsg(bdInfo, paramProvider,
-                ArrayList<Recipient>())
+                ArrayList())
     }
 }
