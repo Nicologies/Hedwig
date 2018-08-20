@@ -4,7 +4,7 @@
   <parent>
     <artifactId>hedwig</artifactId>
     <groupId>com.nicologies.hedwig</groupId>
-    <version>${hedwig.version}</version>
+    <version>1.0.5</version>
   </parent>
   <artifactId>hedwig-server</artifactId>
   <packaging>jar</packaging>

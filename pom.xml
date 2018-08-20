@@ -3,12 +3,11 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.nicologies.hedwig</groupId>
   <artifactId>hedwig</artifactId>
-  <version>${hedwig.version}</version>
+  <version>1.0.5</version>
   <packaging>pom</packaging>
   <properties>
     <teamcity-version>9.0.3</teamcity-version>
     <kotlin.version>1.1.50</kotlin.version>
-    <hedwig.version>1.0.5</hedwig.version>
   </properties>
 
   <dependencies>

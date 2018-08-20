@@ -4,7 +4,7 @@
   <parent>
     <artifactId>hedwig</artifactId>
     <groupId>com.nicologies.hedwig</groupId>
-    <version>${hedwig.version}</version>
+    <version>1.0.5</version>
   </parent>
   <artifactId>build</artifactId>
   <packaging>pom</packaging>
@@ -15,7 +15,7 @@
       <dependency>
            <groupId>com.nicologies.hedwig</groupId>
            <artifactId>hedwig-server</artifactId>
-           <version>${hedwig.version}</version>
+           <version>1.0.5</version>
       </dependency>
   </dependencies>
   <build>
