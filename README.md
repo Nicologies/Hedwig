@@ -37,6 +37,10 @@ Create another parameter `system.hedwig.slack.bot_name` with the bot name you ha
  - `Send Notification` if you want to send message to a room when using TeamCity's `Service Message`
 - Define a teamcity parameter `system.hedwig.hipchat.token` with the token generated above.
 
+### Always notify recipients
+
+Add a teamcity parameter `hedwig.always.notify.recipients` to always notify certain users/channels separating by semicolon.
+
 ### User Mapping
 
 Usually your user name of TeamCity/GitHub is different to Slack/HipChat, if this is the case then you may want to configure  [UserMapping](https://github.com/Nicologies/usermapping)

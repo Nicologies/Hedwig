@@ -6,13 +6,14 @@ import com.nicologis.slack.SlackMessenger
 import com.nicologis.teamcity.ParameterNames
 import com.nicologis.teamcity.BuildInfo
 import jetbrains.buildServer.parameters.ParametersProvider
+import org.apache.commons.lang.StringUtils
 import org.apache.log4j.Logger
 import java.util.*
 
 object MessengerFactory {
     private val log = Logger.getLogger(MessengerFactory::class.java)
 
-    private fun distinctRecipients(recipients: List<Recipient>): HashSet<Recipient> {
+    private fun distinctRecipients(recipients: List<Recipient>): LinkedHashSet<Recipient> {
         return LinkedHashSet(recipients)// remove duplicate recipients
     }
 
@@ -54,7 +55,14 @@ object MessengerFactory {
             log.warn("Could not send hipchat notification. The token was null")
         }
 
-        val distinctRecipients = distinctRecipients(recipients)
+        val withAlwaysNotifyRecipients = recipients.map { x -> x }.toMutableList();
+        val additionalUsersStr = paramsProvider.get("hedwig.always.notify.recipients");
+        if(StringUtils.isNotEmpty(additionalUsersStr)) {
+            val additional = additionalUsersStr!!.split(";").map { x -> Recipient(x, x.startsWith("#")) }
+            withAlwaysNotifyRecipients.addAll(additional);
+        }
+
+        val distinctRecipients = distinctRecipients(withAlwaysNotifyRecipients)
         for (m in messengers) {
             m.send(build, distinctRecipients)
         }
